@@ -10,7 +10,7 @@
 /**
  *
  * #securityFixNeeded
- * Check the submission target and refactor accordingly
+ * Check the submission target and refactor accordingly [FIXED in the target script] ✔️
  * 
  * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
  */
