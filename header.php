@@ -20,6 +20,13 @@ check_for_session();
  * If not, an error message is generated instead of the actual content.
  * The allowed levels are defined on each individual page before the
  * inclusion of this file.
+ * 
+ *
+ * #securityFixNeeded
+ * Check the submission target and refactor accordingly
+ * 
+ * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ *
  */
 can_see_content($allowed_levels);
 
