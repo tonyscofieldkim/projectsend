@@ -14,6 +14,15 @@
  * @package		ProjectSend
  *
  */
+
+/**
+ * #securityFixNeeded
+ * Fix Insecure form submission for all forms here.
+ * Passwords, username, emails should not be in GET VARS
+ * 
+ * Check the submission target and refactor accordingly
+ */
+
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
