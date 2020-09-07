@@ -10,7 +10,13 @@ require_once('sys.includes.php');
 $_SESSION['last_call']	= time();
 
 $header = 'header.php';
-
+/**
+ * #securityFixNeeded
+ * 1. Fix issue associated with insecure form submission
+ * should check the submitting file for wrong VERB GET['username'], GET['password'] and fix
+ * ----------------------------------------------------------------------------------------
+ * 2. Fix session fixation issue by refreshing the session ID
+ */
 if ( !empty( $_GET['do'] ) && $_GET['do'] == 'login' ) {
 }
 else {
