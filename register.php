@@ -6,6 +6,15 @@
  * @subpackage	Clients
  *
  */
+
+/**
+ *
+ * #securityFixNeeded
+ * Check the submission target and refactor accordingly
+ * 
+ * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ */
+
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
