@@ -10,6 +10,13 @@
  * @package ProjectSend
  * @subpackage Upload
  */
+
+ /**
+  * #SecurityFixesNeeded
+  *
+  *Fix XSS vulnerabilities in form submissions
+  *Validate file uploaded names also
+  */
 $load_scripts	= array(
 						'footable',
 					); 
