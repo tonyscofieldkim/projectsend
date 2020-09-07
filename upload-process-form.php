@@ -15,6 +15,11 @@
  * @package ProjectSend
  * @subpackage Upload
  */
+
+ /**
+  * #SecurityFixesNeeded
+  * Fix XSS in this file for parameter add and check for more in other fields
+  */
 define('IS_FILE_EDITOR', true);
 
 $load_scripts	= array(
