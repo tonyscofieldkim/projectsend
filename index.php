@@ -18,9 +18,9 @@
 /**
  * #securityFixNeeded
  * Fix Insecure form submission for all forms here.
- * Passwords, username, emails should not be in GET VARS
+ * Passwords, username, emails should not be in GET VARS  [FIXED] ✔️
  * 
- * Check the submission target and refactor accordingly
+ * Check the submission target and refactor accordingly [FIXED] ✔️
  * 
  * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
  * 

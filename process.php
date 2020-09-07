@@ -14,7 +14,7 @@ $header = 'header.php';
 /**
  * #securityFixNeeded
  * 1. Fix issue associated with insecure form submission
- * should check the submitting file for wrong VERB GET['username'], GET['password'] and fix
+ * should check the submitting file for wrong VERB GET['username'], GET['password'] and fix [FIXED] ✔️
  * ----------------------------------------------------------------------------------------
  * 2. Fix session fixation issue by refreshing the session ID
  */
