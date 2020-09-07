@@ -24,7 +24,7 @@
  * 
  * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
  * 
- * This Script contains Login logic but the session key in the cookie is not regenerated after multiple logins.
+ * This Script contains Login logic but the session key in the cookie is not regenerated after multiple logins. [FIXED] on the submit target✔️
  */
 
 $allowed_levels = array(9,8,7,0);

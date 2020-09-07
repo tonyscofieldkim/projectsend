@@ -16,7 +16,7 @@ $header = 'header.php';
  * 1. Fix issue associated with insecure form submission
  * should check the submitting file for wrong VERB GET['username'], GET['password'] and fix [FIXED] ✔️
  * ----------------------------------------------------------------------------------------
- * 2. Fix session fixation issue by refreshing the session ID
+ * 2. Fix session fixation issue by refreshing the session ID  [FIXED] ✔️
  */
 if (!empty($_GET['do']) && $_GET['do'] == 'login') {
 } else {
@@ -71,6 +71,16 @@ class process
 			);
 			$this->count_user = $this->statement->rowCount();
 			if ($this->count_user > 0) {
+				/**
+				 * Add session refresh logic
+				 * Fixated PHPSESSIONID is a security vulnerability
+				 */
+				try {
+					session_regenerate_id(false);
+				} catch (Exception $exx) {
+					//throw $th;
+				}
+				
 				/** If the username was found on the users table */
 				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 				while ($this->row = $this->statement->fetch()) {
@@ -160,7 +170,7 @@ class process
 			switch ($this->errorstate) {
 				case 'invalid_request_method':
 					$this->login_err_message = __("The request method used in this request is not valid.", 'cftp_admin');
-				break;
+					break;
 				case 'invalid_credentials':
 					$this->login_err_message = __("The supplied credentials are not valid.", 'cftp_admin');
 					break;
@@ -201,7 +211,6 @@ class process
 			}
 			exit;
 		}
-
 		echo json_encode($results);
 		exit;
 	}
