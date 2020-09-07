@@ -6,6 +6,14 @@
  * @package ProjectSend
  * @subpackage Options
  */
+
+/**
+ * #SecurityFixesNeeded
+ * 
+ * Replace script tags from all email bodies
+ * Strip tags from all subject lines
+ * validate emails properly
+ */
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
