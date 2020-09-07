@@ -7,6 +7,12 @@
  * @subpackage	javascript
  *
  */
+
+ /**
+  * #SecurityFixesNeeded
+  * Check for XSS in fields
+  * Check for insecure form submissions e.g passwords in GET submissions
+  */
     header("Content-Type: application/javascript");
 	require_once('../../sys.includes.php');
 ?>
