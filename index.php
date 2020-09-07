@@ -126,7 +126,7 @@ $login_button_text = __('Log in','cftp_admin');
 				});
 			</script>
 		
-            <form action="process.php?do=login" name="login_admin" role="form" id="login_form">
+            <form action="process.php?do=login" method="post" name="login_admin" role="form" id="login_form">
 				<input type="hidden" name="do" value="login">
 				<fieldset>
 					<div class="form-group">
