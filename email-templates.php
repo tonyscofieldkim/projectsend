@@ -123,9 +123,9 @@ if ($_POST) {
 	foreach($_POST as $k => $v){
 		if( strlen($v) > 4){
 			//Check  if it is subject, we would like to keep subject as is
-			if($k != 'email_new_client_by_user_subject'){
-				$val_new = str_ireplace('<script>', '<pre>', $v);
-				$_POST[$k] = str_ireplace('</script>', '</pre>', $val_new);
+			if($k != 'email_new_user_subject' && $k != 'email_new_client_by_user_subject' && $k != 'email_new_file_by_user_subject' && $k != 'email_account_approve_subject' && $k != 'email_account_deny_subject' && $k != 'email_pass_reset_subject' && $k != 'email_client_edited_subject'){
+				$val_new = str_ireplace('<script', '<pre', $v);
+				$_POST[$k] = str_ireplace('</script', '</pre', $val_new);
 			}
 			// else{
 			// 	$_POST[$k] = htmlspecialchars($v);
@@ -361,7 +361,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="email_header_text"><?php _e('Header','cftp_admin'); ?></label>
-								<textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAILS_HEADER_TEXT; ?></textarea>
+								<textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo htmlspecialchars(EMAILS_HEADER_TEXT, ENT_QUOTES, 'UTF-8'); ?></textarea>
 								<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 							</div>
 						</div>
@@ -375,7 +375,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="email_footer_text"><?php _e('Footer','cftp_admin'); ?></label>
-								<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAILS_FOOTER_TEXT; ?></textarea>
+								<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo htmlspecialchars(EMAILS_FOOTER_TEXT, ENT_QUOTES, 'UTF-8'); ?></textarea>
 								<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 							</div>
 						</div>
@@ -404,7 +404,7 @@ if ($_POST) {
 
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="text" name="<?php echo $group['subject']; ?>" id="<?php echo $group['subject']; ?>" class="form-control" placeholder="<?php _e('Add your custom subject','cftp_admin'); ?>" value="<?php echo $group['subject_text']; ?>" />
+								<input type="text" name="<?php echo $group['subject']; ?>" id="<?php echo $group['subject']; ?>" class="form-control" placeholder="<?php _e('Add your custom subject','cftp_admin'); ?>" value="<?php echo htmlspecialchars($group['subject_text'], ENT_QUOTES,'UTF-8', false); ?>" />
 							</div>
 						</div>	
 
@@ -421,7 +421,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="<?php echo $group['body_textarea']; ?>"><?php _e('Template text','cftp_admin'); ?></label>
-								<textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>"  class="form-control textarea_high"><?php echo $group['body_text']; ?></textarea>
+								<textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>"  class="form-control textarea_high"><?php echo htmlspecialchars($group['body_text'], ENT_QUOTES, 'UTF-8'); ?></textarea>
 								<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 							</div>
 						</div>	
