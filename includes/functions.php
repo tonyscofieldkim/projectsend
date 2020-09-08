@@ -275,7 +275,7 @@ function generate_downloads_count( $id = null )
 function tableExists($table)
 {
 	global $dbh;
-
+	$result = false;
 	if ( !empty ( $dbh ) ) {
 	   try {
 	      $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
