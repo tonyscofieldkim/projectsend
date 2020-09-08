@@ -6,9 +6,28 @@
  * @subpackage	Users
  *
  */
+
+ /**
+ * =============== CROSS-FRAME SCRIPTING SECURITY ============
+ * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ * Allow no framing for this page as it has login credentials [FIXED] ✔️
+ * Add CSP Headers before rendering
+ * Add the Backward compatible X-Frame Options too.
+ */
+
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 ?>
 
+
 <script type="text/javascript">
+/**Check if this page is Framed to mitigate XFS Attacks */
+(function(window) {
+					if (window.location !== window.top.location)
+						window.top.location = window.location;
+				})(this);
+
 	$(document).ready(function() {
 		$("form").submit(function() {
 			clean_form(this);
