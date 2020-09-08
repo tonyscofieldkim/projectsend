@@ -5,6 +5,21 @@
  * @package		ProjectSend
  *
  */
+
+/**
+ * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ * Allow no framing for this page as it has login credentials [FIXED] ✔️
+ */
+
+ /**
+ * =============== CROSS-FRAME SCRIPTING SECURITY ============
+ * Add CSP Headers before rendering
+ * Add the Backward compatible X-Frame Options too.
+ */
+
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
@@ -301,6 +316,13 @@ include('header-unlogged.php');
 					case 'enter_new_password':
 			?>
 						<script type="text/javascript">
+
+						/** Check if this page is framed, if it is, change location */
+				(function(window) {
+					if (window.location !== window.top.location)
+						window.top.location = window.location;
+				})(this);
+
 							/**
 							 * Quick hack to ignore the col-sm-* classes
 							 * when adding the errors to the form

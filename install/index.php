@@ -5,6 +5,17 @@
  * @package		ProjectSend
  * @subpackage	Install
  */
+/**
+ * =============== CROSS-FRAME SCRIPTING SECURITY ============
+ * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ * Allow no framing for this page as it has login credentials [FIXED] ✔️
+ * Add CSP Headers before rendering
+ * Add the Backward compatible X-Frame Options too.
+ */
+
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 define( 'IS_INSTALL', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
@@ -221,6 +232,11 @@ include_once('../header-unlogged.php');
 						?>
 
 							<script type="text/javascript">
+							/** Check if this page is framed, if it is, change location */
+							(function(window) {
+					if (window.location !== window.top.location)
+						window.top.location = window.location;
+				})(this);
 								$(document).ready(function() {
 									$("form").submit(function() {
 										clean_form(this);
