@@ -110,11 +110,29 @@ if ($_POST) {
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
 	 */
+
+	/**
+	 * The cfields need to be checked for empty values and script tags need to be stripped properly
+	 */
 	$keys = array_keys($_POST);
 
 	$options_total = count($keys);
 
 	$updated = 0;
+	//filter out scripts from input
+	foreach($_POST as $k => $v){
+		if( strlen($v) > 4){
+			//Check  if it is subject, we would like to keep subject as is
+			if($k != 'email_new_client_by_user_subject'){
+				$val_new = str_ireplace('<script>', '<pre>', $v);
+				$_POST[$k] = str_ireplace('</script>', '</pre>', $val_new);
+			}
+			// else{
+			// 	$_POST[$k] = htmlspecialchars($v);
+			// }
+			
+		}
+	}
 	for ($j = 0; $j < $options_total; $j++) {
 		$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
 		$save->bindParam(':value', $_POST[$keys[$j]]);
