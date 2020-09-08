@@ -132,7 +132,7 @@ include_once('../header-unlogged.php');
 							/**
 							 * The URI must end with a /, so add it if it wasn't posted.
 							 */
-							if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
+							if ($base_uri[(strlen($base_uri) - 1)] != '/') { $base_uri .= '/'; }
 							/** Begin form validation */
 							$valid_me->validate('completed',$this_install_title,$install_no_sitename);
 							$valid_me->validate('completed',$base_uri,$install_no_baseuri);
