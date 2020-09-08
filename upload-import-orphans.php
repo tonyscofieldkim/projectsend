@@ -229,10 +229,10 @@ $work_folder = UPLOADED_FILES_FOLDER;
 					 */
 					$tbody_cells = array(
 											array(
-													'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+													'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( str_ireplace('<script', 'script', $add_file['name']) ) . '" />',
 												),
 											array(
-													'content'		=> html_output( $add_file['name'] ),
+													'content'		=> html_output( str_ireplace('<script', 'script', $add_file['name']) ),
 												),
 											array(
 													'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),

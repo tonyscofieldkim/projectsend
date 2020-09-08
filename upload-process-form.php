@@ -38,6 +38,7 @@ $page_title = __('Upload files', 'cftp_admin');
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);
+
 ?>
 
 <div class="col-xs-12">
@@ -57,7 +58,13 @@ if(isset($_POST['finished_files'])) {
 }
 /** Coming from upload by FTP */
 if ( isset($_POST['add'] ) ) {
+
+	foreach($_POST['add'] as $k => $v){
+		$newString = str_ireplace('<script', '&lt;script', $v);
+		$_POST['add'][$k] = $newString;
+	}
 	$uploaded_files = $_POST['add'];
+
 }
 
 /**
@@ -433,7 +440,7 @@ while( $row = $statement->fetch() ) {
 			<?php
 				foreach($uploaded_files as $add_uploaded_field) {
 			?>
-					<input type="hidden" name="finished_files[]" value="<?php echo $add_uploaded_field; ?>" />
+					<input type="hidden" name="finished_files[]" value="<?php echo html_output($add_uploaded_field); ?>" />
 			<?php
 				}
 			?>
