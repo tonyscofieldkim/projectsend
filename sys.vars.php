@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ProjectSend system constants
  *
@@ -27,7 +28,7 @@ define('REQUIRED_VERSION_MYSQL', '5.0');
  * Contribution by Scott Wright on
  * http://code.google.com/p/clients-oriented-ftp/issues/detail?id=230
  */
-define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
+define('PROTOCOL', empty($_SERVER['HTTPS']) ? 'http' : 'https');
 
 /**
  * DEBUG constant effects:
@@ -49,15 +50,14 @@ define('IS_DEV', false);
  *
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
-if ( DEBUG === true ) {
+if (DEBUG === true) {
 	error_reporting(E_ALL);
-}
-else {
+} else {
 	error_reporting(0);
 }
 
-define('GLOBAL_TIME_LIMIT', 240*60);
-define('UPLOAD_TIME_LIMIT', 120*60);
+define('GLOBAL_TIME_LIMIT', 240 * 60);
+define('UPLOAD_TIME_LIMIT', 120 * 60);
 @set_time_limit(GLOBAL_TIME_LIMIT);
 
 DEFINE('DS', DIRECTORY_SEPARATOR);
@@ -66,13 +66,13 @@ DEFINE('DS', DIRECTORY_SEPARATOR);
  * Define the RSS url to use on the home news list.
  */
 // define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
-define('NEWS_FEED_URI','https://www.projectsend.org/serve/news');
+define('NEWS_FEED_URI', 'https://www.projectsend.org/serve/news');
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
 // define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
-define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
+define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
 
 /**
  * Check if the personal configuration file exists
@@ -80,19 +80,17 @@ define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
  *
  * @see sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
-	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+if (!file_exists(ROOT_DIR . '/includes/sys.config.php')) {
+	if (!defined('IS_MAKE_CONFIG')) {
 		// the following script returns only after the creation of the configuration file
-		if ( defined('IS_INSTALL') ) {
+		if (defined('IS_INSTALL')) {
 			header('Location:make-config.php');
-		}
-		else {
+		} else {
 			header('Location:install/make-config.php');
 		}
 	}
-}
-else {
-	include(ROOT_DIR.'/includes/sys.config.php');
+} else {
+	include(ROOT_DIR . '/includes/sys.config.php');
 }
 
 /**
@@ -106,7 +104,7 @@ if (!defined('DB_DRIVER')) {
  * Check for PDO extensions
  */
 $pdo_available_drivers = PDO::getAvailableDrivers();
-if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
+if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
 	echo '<h1>Missing a required extension</h1>';
 	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
 	<p>This extension is required for database comunication.</p>
@@ -118,7 +116,7 @@ if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
 	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
 	exit;
 }
-if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
+if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
 	echo '<h1>Missing a required extension</h1>';
 	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
 	<p>This extension is required for database comunication.</p>
@@ -153,27 +151,27 @@ define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 
 $original_basic_tables = array(
-								TABLE_FILES,
-								TABLE_OPTIONS,
-								TABLE_USERS
-							);
+	TABLE_FILES,
+	TABLE_OPTIONS,
+	TABLE_USERS
+);
 
 $all_system_tables = array(
-							'files',
-							'files_relations',
-							'downloads',
-							'notifications',
-							'options',
-							'users',
-							'groups',
-							'members',
-							'members_requests',
-							'folders',
-							'categories',
-							'categories_relations',
-							'actions_log',
-							'password_reset',
-						);
+	'files',
+	'files_relations',
+	'downloads',
+	'notifications',
+	'options',
+	'users',
+	'groups',
+	'members',
+	'members_requests',
+	'folders',
+	'categories',
+	'categories_relations',
+	'actions_log',
+	'password_reset',
+);
 
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
@@ -192,7 +190,7 @@ define('MAX_GENERATE_PASS_CHARS', 20);
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
  */
-define('COOKIE_EXP_TIME', 60*60*24*30);
+define('COOKIE_EXP_TIME', 60 * 60 * 24 * 30);
 
 /**
  * Time (in seconds) after which the session becomes invalid.
@@ -200,17 +198,17 @@ define('COOKIE_EXP_TIME', 60*60*24*30);
  * Case uses must be analyzed before enabling this function
  */
 define('SESSION_TIMEOUT_EXPIRE', true);
-$session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seconds
+$session_expire_time = 31 * 24 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /**
  * Define the folder where uploaded files will reside
  */
-define('UPLOADED_FILES_FOLDER', ROOT_DIR.'/upload/files/');
+define('UPLOADED_FILES_FOLDER', ROOT_DIR . '/upload/files/');
 define('UPLOADED_FILES_URL', 'upload/files/');
 
 /* Cache folder */
-define('JSON_CACHE_DIR', ROOT_DIR.DS.'cache'); 
+define('JSON_CACHE_DIR', ROOT_DIR . DS . 'cache');
 
 /**
  * Define the folder where the uploaded files are stored before
@@ -221,22 +219,22 @@ define('JSON_CACHE_DIR', ROOT_DIR.DS.'cache');
  *
  * @ Deprecated
  */
-define('USER_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
-define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
+define('USER_UPLOADS_TEMP_FOLDER', ROOT_DIR . '/upload/temp');
+define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR . '/upload/temp');
 
 /**
  * Define the system name, and the information that will be used
  * on the footer blocks.
  *
  */
-define('SYSTEM_URI','https://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on github');
-define('DONATIONS_URL','https://www.projectsend.org/donations/');
+define('SYSTEM_URI', 'https://www.projectsend.org/');
+define('SYSTEM_URI_LABEL', 'ProjectSend on github');
+define('DONATIONS_URL', 'https://www.projectsend.org/donations/');
 /** Previously cFTP */
-define('SYSTEM_NAME','ProjectSend');
+define('SYSTEM_NAME', 'ProjectSend');
 
-define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
-define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
+define('LOGO_FOLDER', ROOT_DIR . '/img/custom/logo/');
+define('LOGO_THUMB_FOLDER', ROOT_DIR . '/img/custom/thumbs/');
 
 /** phpass */
 define('HASH_COST_LOG2', 8);
