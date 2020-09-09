@@ -1,6 +1,20 @@
 Changelog
 =========
 
+r1.2.0.1
+--------
+No new features
+
+Security Enhancement:
+* Fixed `Insecure form submission` which caused login form to send via HTTP `GET` when Javascript is disabled.
+* Fixed all data validation bugs which made the software vulnerable to `XSS Scripting Attacks` [See here](https://www.owasp.org/index.php/XSS)
+* Fixed `Cross-Frame-Scripting` Vulnerability. [See here](http://tools.ietf.org/html/rfc6797)
+* Fixed `Session Fixation Vulnerability`. [See here](http://cwe.mitre.org/data/definitions/384.html)
+
+Bugs squashed:
+* Use of depracated syntax `string{i}` when accessing string offsets. Deprecated in PHP 7
+
+
 1.2.0
 -----
 
