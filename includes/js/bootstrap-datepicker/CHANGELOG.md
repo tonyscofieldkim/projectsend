@@ -1,7 +1,7 @@
 Changelog
 =========
 
-r1.2.0.1
+r1.2.0.1-marketsoft
 --------
 No new features
 
