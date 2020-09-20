@@ -256,7 +256,7 @@ class MembersActions
 				$this->request_by	= $arguments['request_by'];
 
 				/** Make a list of current groups to ignore new requests to them */
-				$this->current_groups = self::client_get_groups(
+				$this->current_groups = $this->client_get_groups(
 															array(
 																'client_id' => $this->client_id
 															)
@@ -271,7 +271,7 @@ class MembersActions
 				}
 
 				/** Make a list of current requests to avoid duplicates */
-				$this->current_requests = self::get_membership_requests(
+				$this->current_requests = $this->get_membership_requests(
 															array(
 																'client_id' => $this->client_id
 															)
@@ -454,7 +454,7 @@ class MembersActions
 			$this->get_requests_arguments = array(
 													'client_id'	=> $this->client_id,
 												);
-			$this->get_requests	= self::get_membership_requests( $this->get_requests_arguments );
+			$this->get_requests	= $this->get_membership_requests( $this->get_requests_arguments );
 			$this->on_database = $this->get_requests[$this->client_id]['group_ids'];
 
 
@@ -497,7 +497,7 @@ class MembersActions
 												'group_ids'		=> $this->add,
 												'request_by'	=> $this->request_by,
 											);
-					$this->process_add = self::group_request_membership( $this->add_arguments );
+					$this->process_add = $this->group_request_membership( $this->add_arguments );
 				}
 			}
 
