@@ -80,23 +80,23 @@ class process
 				} catch (Exception $exx) {
 					//throw $th;
 				}
-				
+
 				/** If the username was found on the users table */
 				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 				while ($this->row = $this->statement->fetch()) {
-					$this->sysuser_username	= $this->row['user'];
+					$this->sysuser_username	= html_output($this->row['user']);
 					$this->db_pass			= $this->row['password'];
 					$this->user_level		= $this->row["level"];
 					$this->active_status	= $this->row['active'];
 					$this->logged_id		= $this->row['id'];
-					$this->global_name		= $this->row['name'];
+					$this->global_name		= html_output($this->row['name']);
 				}
 				$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
 				if ($this->check_password) {
 					//if ($db_pass == $sysuser_password) {
 					if ($this->active_status != '0') {
 						/** Set SESSION values */
-						$_SESSION['loggedin']	= $this->sysuser_username;
+						$_SESSION['loggedin']	= html_output($this->sysuser_username);
 						$_SESSION['userlevel']	= $this->user_level;
 						$_SESSION['lang']		= $this->selected_form_lang;
 
@@ -116,7 +116,7 @@ class process
 							$_SESSION['access']		= $this->access_string;
 						} else {
 							$this->access_string	= $this->sysuser_username;
-							$_SESSION['access']		= $this->sysuser_username;
+							$_SESSION['access']		= html_output($this->sysuser_username);
 						}
 
 						/** Record the action log */
