@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show the form to edit a system user.
  *
@@ -6,7 +7,10 @@
  * @subpackage	Users
  *
  */
-$allowed_levels = array(9,8,7);
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
+$allowed_levels = array(9, 8, 7);
 require_once('sys.includes.php');
 
 $active_nav = 'users';
@@ -18,8 +22,7 @@ $edit_user = new UserActions();
 if (isset($_GET['id'])) {
 	$user_id = $_GET['id'];
 	$page_status = (user_exists_id($user_id)) ? 1 : 2;
-}
-else {
+} else {
 	/**
 	 * Return 0 if the id is not set.
 	 */
@@ -35,13 +38,17 @@ if ($page_status === 1) {
 	$editing->execute();
 	$editing->setFetchMode(PDO::FETCH_ASSOC);
 
-	while ( $data = $editing->fetch() ) {
+	while ($data = $editing->fetch()) {
 		$add_user_data_name = $data['name'];
 		$add_user_data_user = $data['user'];
 		$add_user_data_email = $data['email'];
 		$add_user_data_level = $data['level'];
 		$add_user_data_maxfilesize	= $data['max_file_size'];
-		if ($data['active'] == 1) { $add_user_data_active = 1; } else { $add_user_data_active = 0; }
+		if ($data['active'] == 1) {
+			$add_user_data_active = 1;
+		} else {
+			$add_user_data_active = 0;
+		}
 	}
 }
 
@@ -51,13 +58,11 @@ if ($page_status === 1) {
 if (CURRENT_USER_LEVEL == 7) {
 	$user_form_type = 'edit_user_self';
 	$ignore_size = true;
-}
-else {
+} else {
 	if (CURRENT_USER_USERNAME == $add_user_data_user) {
 		$user_form_type = 'edit_user_self';
 		$ignore_size = true;
-	}
-	else {
+	} else {
 		$user_form_type = 'edit_user';
 		$ignore_size = false;
 	}
@@ -93,22 +98,20 @@ if ($_POST) {
 	$add_user_data_name			= $_POST['add_user_form_name'];
 	$add_user_data_email		= $_POST['add_user_form_email'];
 
-	if ( $ignore_size == false ) {
+	if ($ignore_size == false) {
 		$add_user_data_maxfilesize	= (isset($_POST["add_user_form_maxfilesize"])) ? $_POST["add_user_form_maxfilesize"] : '';
-	}
-	else {
+	} else {
 		$add_user_data_maxfilesize	= $add_user_data_maxfilesize;
 	}
 
 	/**
 	 * Edit level only when user is not Uploader (level 7) or when
 	 * editing other's account (not own).
-	 */	
+	 */
 	$edit_level_active = true;
 	if (CURRENT_USER_LEVEL == 7) {
 		$edit_level_active = false;
-	}
-	else {
+	} else {
 		if (CURRENT_USER_USERNAME == $add_user_data_user) {
 			$edit_level_active = false;
 		}
@@ -121,14 +124,14 @@ if ($_POST) {
 
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
-							'id'			=> $user_id,
-							'name'			=> $add_user_data_name,
-							'email'				=> $add_user_data_email,
-							'role'				=> $add_user_data_level,
-							'active'				=> $add_user_data_active,
-							'max_file_size'	=> $add_user_data_maxfilesize,
-							'type'				=> 'edit_user'
-						);
+		'id'			=> $user_id,
+		'name'			=> $add_user_data_name,
+		'email'				=> $add_user_data_email,
+		'role'				=> $add_user_data_level,
+		'active'				=> $add_user_data_active,
+		'max_file_size'	=> $add_user_data_maxfilesize,
+		'type'				=> 'edit_user'
+	);
 
 	/**
 	 * If the password field, or the verification are not completed,
@@ -139,7 +142,7 @@ if ($_POST) {
 
 	/** Validate the information from the posted form. */
 	$edit_validate = $edit_user->validate_user($edit_arguments);
-	
+
 	/** Create the user if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
@@ -150,9 +153,9 @@ if ($_POST) {
 	die();
 }
 
-$page_title = __('Edit system user','cftp_admin');
+$page_title = __('Edit system user', 'cftp_admin');
 if (CURRENT_USER_USERNAME == $add_user_data_user) {
-	$page_title = __('My account','cftp_admin');
+	$page_title = __('My account', 'cftp_admin');
 }
 
 include('header.php');
@@ -160,69 +163,66 @@ include('header.php');
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
 	<?php
-		if (isset($_GET['status'])) {
-			switch ($_GET['status']) {
-				case 1:
-					$msg = __('User edited correctly.','cftp_admin');
-					echo system_message('ok',$msg);
+	if (isset($_GET['status'])) {
+		switch ($_GET['status']) {
+			case 1:
+				$msg = __('User edited correctly.', 'cftp_admin');
+				echo system_message('ok', $msg);
 
-					$saved_user = get_user_by_id($user_id);
-					/** Record the action log */
-					$new_log_action = new LogActions();
-					$log_action_args = array(
-											'action' => 13,
-											'owner_id' => CURRENT_USER_ID,
-											'affected_account' => $user_id,
-											'affected_account_name' => $saved_user['username'],
-											'get_user_real_name' => true
-										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$saved_user = get_user_by_id($user_id);
+				/** Record the action log */
+				$new_log_action = new LogActions();
+				$log_action_args = array(
+					'action' => 13,
+					'owner_id' => CURRENT_USER_ID,
+					'affected_account' => $user_id,
+					'affected_account_name' => $saved_user['username'],
+					'get_user_real_name' => true
+				);
+				$new_record_action = $new_log_action->log_action_save($log_action_args);
 				break;
-				case 0:
-					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('error',$msg);
+			case 0:
+				$msg = __('There was an error. Please try again.', 'cftp_admin');
+				echo system_message('error', $msg);
 				break;
-			}
 		}
+	}
 	?>
-	
+
 	<div class="white-box">
 		<div class="white-box-interior">
-		
+
 			<?php
-				/**
-				 * If the form was submited with errors, show them here.
-				 */
-				$valid_me->list_errors();
-			?>
-			
-			<?php
-				$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
-				if ($page_status === 0) {
-					$msg = __('No user was selected.','cftp_admin');
-					echo system_message('error',$msg);
-					echo '<p>'.$direct_access_error.'</p>';
-				}
-				else if ($page_status === 2) {
-					$msg = __('There is no user with that ID number.','cftp_admin');
-					echo system_message('error',$msg);
-					echo '<p>'.$direct_access_error.'</p>';
-				}
-				else if ($page_status === 3) {
-					$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
-					echo system_message('error',$msg);
-				}
-				else {
-					/**
-					 * Include the form.
-					 */
-					include('users-form.php');
-				}
+			/**
+			 * If the form was submited with errors, show them here.
+			 */
+			$valid_me->list_errors();
 			?>
 
-		</div>		
+			<?php
+			$direct_access_error = __('This page is not intended to be accessed directly.', 'cftp_admin');
+			if ($page_status === 0) {
+				$msg = __('No user was selected.', 'cftp_admin');
+				echo system_message('error', $msg);
+				echo '<p>' . $direct_access_error . '</p>';
+			} else if ($page_status === 2) {
+				$msg = __('There is no user with that ID number.', 'cftp_admin');
+				echo system_message('error', $msg);
+				echo '<p>' . $direct_access_error . '</p>';
+			} else if ($page_status === 3) {
+				$msg = __("Your account type doesn't allow you to access this feature.", 'cftp_admin');
+				echo system_message('error', $msg);
+			} else {
+				/**
+				 * Include the form.
+				 */
+				include('users-form.php');
+			}
+			?>
+
+		</div>
 	</div>
 </div>
 
 <?php
-	include('footer.php');
+include('footer.php');

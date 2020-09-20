@@ -1,17 +1,21 @@
 <?php
+
 /**
  * List of available client's templates
  *
  * @package ProjectSend
  * @subpackage Design
  */
-$load_scripts	= array(
-					); 
+
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
+$load_scripts	= array();
 
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
-$page_title	= __("Templates",'cftp_admin');
+$page_title	= __("Templates", 'cftp_admin');
 
 $active_nav = 'templates';
 include('header.php');
@@ -19,16 +23,15 @@ include('header.php');
 /**
  * Changing the client's template
  */
-if ( isset($_GET['activate_template']) ) {
-	$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+if (isset($_GET['activate_template'])) {
+	$save = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name");
 	$save->bindValue(':value', $_GET['activate_template']);
 	$save->bindValue(':name', 'selected_clients_template');
 	$save->execute();
 
-	if ($save ){
+	if ($save) {
 		$template_change_state = '1';
-	}
-	else {
+	} else {
 		$template_change_state = '2';
 	}
 
@@ -37,7 +40,7 @@ if ( isset($_GET['activate_template']) ) {
 	$section_redirect = 'templates';
 	$location = BASE_URI . 'templates.php';
 
-	if ( !empty( $template_change_state ) ) {
+	if (!empty($template_change_state)) {
 		$location .= '?status=' . $template_change_state;
 	}
 
@@ -49,38 +52,40 @@ if ( isset($_GET['activate_template']) ) {
 
 <div class="col-xs-12 col-sm-12 col-lg-12">
 	<?php
-		if (isset($_GET['status'])) {
-			switch ($_GET['status']) {
-				case '1':
-					$msg = __('Options updated succesfuly.','cftp_admin');
-					echo system_message('ok',$msg);
-					break;
-				case '2':
-					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('error',$msg);
-					break;
-			}
+	if (isset($_GET['status'])) {
+		switch ($_GET['status']) {
+			case '1':
+				$msg = __('Options updated succesfuly.', 'cftp_admin');
+				echo system_message('ok', $msg);
+				break;
+			case '2':
+				$msg = __('There was an error. Please try again.', 'cftp_admin');
+				echo system_message('error', $msg);
+				break;
 		}
+	}
 	?>
 
 	<div class="template_selector">
 		<div class="row">
 			<?php
-				$templates = look_for_templates();
-				foreach ($templates as $template) {
+			$templates = look_for_templates();
+			foreach ($templates as $template) {
 			?>
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="template <?php if ( $template['location'] == TEMPLATE_USE ) { echo 'current_template'; } ?>">
+					<div class="template <?php if ($template['location'] == TEMPLATE_USE) {
+												echo 'current_template';
+											} ?>">
 						<div class="col-xs-12">
 							<div class="images">
 								<?php
-									if ( !empty( $template['cover'] ) ) {
+								if (!empty($template['cover'])) {
 								?>
-										<div class="cover">
-											<img src="<?php echo html_output($template['cover']); ?>" alt="<?php echo html_output($template['name']); ?>">
-										</div>
+									<div class="cover">
+										<img src="<?php echo html_output($template['cover']); ?>" alt="<?php echo html_output($template['name']); ?>">
+									</div>
 								<?php
-									}
+								}
 								?>
 								<div class="screenshot">
 									<img src="<?php echo html_output($template['screenshot']); ?>" alt="<?php echo html_output($template['name']); ?>">
@@ -97,7 +102,7 @@ if ( isset($_GET['activate_template']) ) {
 								<div class="description">
 									<?php echo $template['description']; ?>
 								</div>
-								
+
 								<h5>Author</h5>
 								<p>
 									<a href="<?php echo $template['authoruri']; ?>" target="_blank">
@@ -110,31 +115,30 @@ if ( isset($_GET['activate_template']) ) {
 						<div class="col-xs-4">
 							<div class="buttons">
 								<?php
-									if ( $template['location'] == TEMPLATE_USE ) {
+								if ($template['location'] == TEMPLATE_USE) {
 								?>
-										<a href="#" class="btn btn-default disabled">
-											<?php _e('Active','cftp_admin'); ?>
-										</a>
+									<a href="#" class="btn btn-default disabled">
+										<?php _e('Active', 'cftp_admin'); ?>
+									</a>
 								<?php
-									}
-									else {
+								} else {
 								?>
-										<a href="templates.php?activate_template=<?php echo $template['location']; ?>" class="btn btn-primary">
-											<?php _e('Activate','cftp_admin'); ?>
-										</a>
+									<a href="templates.php?activate_template=<?php echo $template['location']; ?>" class="btn btn-primary">
+										<?php _e('Activate', 'cftp_admin'); ?>
+									</a>
 								<?php
-									}
+								}
 								?>
 							</div>
 						</div>
 					</div>
 				</div>
 			<?php
-				}
+			}
 			?>
 		</div>
 	</div>
 </div>
 
 <?php
-	include('footer.php');
+include('footer.php');

@@ -15,6 +15,11 @@
  * Strip tags from all subject lines
  * validate emails properly
  */
+
+/**Disable Iframes */
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 

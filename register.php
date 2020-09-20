@@ -16,6 +16,9 @@
  * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
  */
 
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 $allowed_levels = array(9, 8, 7, 0);
 require_once('sys.includes.php');
 

@@ -5,6 +5,11 @@
  *
  * @package ProjectSend
  */
+
+/**Disable Iframes */
+header("X-Frame-Options: DENY");
+header("Content-Security-Policy: frame-ancestors none");
+
 $footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 	'footable',
