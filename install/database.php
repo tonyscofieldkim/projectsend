@@ -5,12 +5,27 @@
  *
  * @package		ProjectSend
  * @subpackage	Install
+ * 
+ * TODO: Modify default options to
+ * Clients cannot register
+ * 
+ * 
+ * Add password policy fileds and tables
+ * 
+ * 1. Password length for system and clients: [client len=12, system users len=15]
+ * 1. Password change frequency, system users = 30d, clients = 90d
+ * 3. Login Attempts [max=6 within 15min lock for 30min then reset]
+ * 4. Changed passwords history [10 previous]
+ * 
+ * 5. Password Composition ([A-Z-a-zÀ-žа-я0-9]+^\w)
+ * 
  */
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();
 	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
+	$now_secs = time();
 
 	$install_queries = array(
 
@@ -267,7 +282,7 @@ if (defined('TRY_INSTALL')) {
 								('version_new_security', ''),
 								('version_new_features', ''),
 								('version_new_important', ''),
-								('clients_auto_approve', '0'),
+								('clients_auto_approve', '1'),
 								('clients_auto_group', '0'),
 								('clients_can_upload', '1'),
 								('clients_can_set_expiration_date', '0'),
@@ -290,10 +305,10 @@ if (defined('TRY_INSTALL')) {
 								('notifications_max_tries', '2'),
 								('notifications_max_days', '15'),
 								('file_types_limit_to', 'all'),
-								('pass_require_upper', '0'),
-								('pass_require_lower', '0'),
-								('pass_require_number', '0'),
-								('pass_require_special', '0'),
+								('pass_require_upper', '1'),
+								('pass_require_lower', '1'),
+								('pass_require_number', '1'),
+								('pass_require_special', '1'),
 								('mail_smtp_auth', 'none'),
 								('use_browser_lang', '0'),
 								('clients_can_delete_own_files', '0'),
@@ -336,7 +351,10 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_page_enable', '0'),
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
-								('public_listing_use_download_link', '0')
+								('public_listing_use_download_link', '0'),
+								('max_login_attempts', '6'),
+								('max_login_interval', '900'),
+								('max_login_lockout_duration', '1800'),
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
@@ -385,11 +403,50 @@ if (defined('TRY_INSTALL')) {
 								  `cat_id` int(11) NOT NULL,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  PRIMARY KEY (`id`)
+								  PRIMARY KEY (`id`),
+
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
+		'16' => array(
+			'table' => TABLE_LOGIN_ATTEMPTS,
+			'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOGIN_ATTEMPTS.'` (
+				`id` int NOT NULL AUTO_INCREMENT,
+				`uid` int NOT NULL,
+				`time_when` int NOT NULL,
+				PRIMARY KEY (`id`),
+				KEY `uid_fk` (`id`,`uid`),
+				KEY `uid` (`uid`),
+				FOREIGN KEY (`uid`) REFERENCES '.TABLE_USERS.' (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+			'params' => array(),
+		),
+		'17' => array(
+			'table' => TABLE_PASSWORD_HISTORY,
+			'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_HISTORY.'` (
+				`id` int NOT NULL AUTO_INCREMENT,
+				`uid` int NOT NULL,
+				`password_number` int NOT NULL,
+				`creation_time` int NOT NULL,
+				`hash_val` text NOT NULL,
+				PRIMARY KEY (`id`),
+				UNIQUE KEY `uid_fk` (`id`,`uid`),
+				KEY `uid` (`uid`),
+				FOREIGN KEY (`uid`) REFERENCES '.TABLE_USERS.' (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+			'params' => array(),
+			),
+			'18' => array(
+				'table' => '',
+				'query' => 'INSERT INTO '.TABLE_PASSWORD_HISTORY.' (`uid`, `password_number`, `creation_time` `hash_val`, `creation_time`) VALUES(:uid, :password_number, :creation_time, :hash_val)',
+				'params' => array(
+					':uid' => 1,
+					':password_number' => 1,
+					':creation_time' => $now_secs,
+					':hash_val' => $got_admin_pass,
+				),
+			)
 
 	);
 }

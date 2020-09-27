@@ -2875,7 +2875,7 @@ msgid "Passwords"
 msgstr ""
 
 #: options.php:739
-msgid "When setting up a password for an account, require at least:"
+msgid "When setting up a password for an account, require the following"
 msgstr ""
 
 #: options.php:775

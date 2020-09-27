@@ -130,6 +130,19 @@ if (!empty($options_values)) {
 		define('EMAILS_CLIENT_BY_SELF_TEXT', htmlspecialchars($options_values['email_new_client_by_self_text'], ENT_QUOTES, 'UTF-8', false));
 		define('EMAILS_NEW_USER_TEXT', htmlspecialchars($options_values['email_new_user_text'], ENT_QUOTES, 'UTF-8', false));
 	}
+	/**
+	 * Added options  by marketsoft
+	 */
+	if(isset($options_values['max_login_attempts'])){
+		define('MAX_LOGIN_ATTEMPTS', $options_values['max_login_attempts']);
+	}
+	if(isset($options_values['max_login_interval'])){
+		define('MAX_LOGIN_INTERVAL', $options_values['max_login_interval']);
+		
+	}
+	if(isset($options_values['max_login_lockout_duration'])){
+		define('MAX_LOGIN_LOCKOUT_DURATION', $options_values['max_login_lockout_duration']);
+	}
 
 	/**
 	 * For versions 426 and up
