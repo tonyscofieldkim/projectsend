@@ -55,6 +55,7 @@ Thumbs.db
 
 # Test results
 test-results
-
+zz-example.php
+zz-reminder
 # Misc
 .idea/
