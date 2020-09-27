@@ -78,14 +78,14 @@ $current_level = get_current_user_level();
 				url: 'process-upload.php',
 				max_file_size: '<?php echo UPLOAD_MAX_FILESIZE; ?>mb',
 				chunk_size: '1mb',
-				multipart: true,
+				multipart: true
 				<?php
 				if (false === CAN_UPLOAD_ANY_FILE_TYPE) {
 				?>,
 					filters: [{
 						title: "Allowed files",
 						extensions: "<?php echo $options_values['allowed_file_types']; ?>"
-					}],
+					}]
 				<?php
 				}
 				?>,

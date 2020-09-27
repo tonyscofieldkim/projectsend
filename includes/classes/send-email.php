@@ -10,6 +10,9 @@
  * - A new system user has been created.
  * - A user or client requested a password reset.
  *
+ * TODO:
+ * Check about password reset (System frequency requirement)
+ * 
  * @package		ProjectSend
  * @subpackage	Classes
  */

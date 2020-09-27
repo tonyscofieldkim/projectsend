@@ -14,6 +14,9 @@
  * Check the submission target and refactor accordingly [FIXED in the target script] ✔️
  * 
  * Cross-Frame Scripting should be mitigated by adding CSP Headers as well as X-Frame-Options Headers
+ * 
+ * 
+ * TODO: Check password policy here, although this may never be used
  */
 
 header("X-Frame-Options: DENY");
