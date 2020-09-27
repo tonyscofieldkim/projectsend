@@ -89,7 +89,7 @@ include('header-unlogged.php');
 			 * The form submited contains a new token request
 			 */
 			case 'new_request':
-				$sql_user = $dbh->prepare("SELECT id, user, email FROM " . TABLE_USERS . " WHERE email = :email");
+				$sql_user = $dbh->prepare("SELECT id, user, name, email, level FROM " . TABLE_USERS . " WHERE email = :email");
 				$sql_user->bindParam(':email', $_POST['reset_password_email']);
 				$sql_user->execute();
 				$count_user = $sql_user->rowCount();
@@ -100,6 +100,8 @@ include('header-unlogged.php');
 					$row = $sql_user->fetch();
 					$id			= $row['id'];
 					$username	= $row['user'];
+					$name = $row['name'];
+					$level = $row['level'];
 					$email		= $row['email'];
 					$token		= generateRandomString(32);
 					
@@ -151,13 +153,17 @@ include('header-unlogged.php');
 			 */
 			case 'new_password':
 				if (!empty($got_user_id)) {
+				
+
 					$reset_password_new = $_POST['reset_password_new'];
 	
 					/** Password checks */
 					$valid_me->validate('completed',$reset_password_new,$validation_no_pass);
-					$valid_me->validate('password',$reset_password_new,$validation_valid_pass.' '.$validation_valid_chars);
+					//$valid_me->validate('password',$reset_password_new,$validation_valid_pass.' '.$validation_valid_chars);
 					$valid_me->validate('pass_rules',$reset_password_new,$validation_rules_pass);
-					$valid_me->validate('length',$reset_password_new,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
+					$minPwd = $level > 0 ? MIN_PASS_CHARS_SYSTEM_USER : MIN_PASS_CHARS;
+					$valid_me->validate('length',$reset_password_new,$validation_length_pass,$minPwd,MAX_PASS_CHARS);
+					$valid_me->validate('pass_has_pi_data', $reset_password_new, $validation_password_has_pi_data, $username, $name, $email);
 			
 					if ($valid_me->return_val) {
 	

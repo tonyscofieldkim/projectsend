@@ -45,7 +45,9 @@ if (in_session_or_cookies($log_allowed)) {
 	</div>
 	<div class="row">
 		<div class="col-sm-6">
-			<?php include_once(WIDGETS_FOLDER . 'news.php'); ?>
+			<?php
+			/**can ommit this widget */
+			include_once(WIDGETS_FOLDER . 'news.php'); ?>
 		</div>
 		<?php
 		if ($sys_info == true) {

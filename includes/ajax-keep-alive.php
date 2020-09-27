@@ -9,6 +9,7 @@
  *
  * @package ProjectSend
  */
+
 session_start();
 $_SESSION['last_call'] = time();
 /*

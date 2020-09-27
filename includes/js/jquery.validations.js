@@ -106,7 +106,8 @@ function is_alpha_or_dot(field,error) {
 
 function is_password(field,error) {
 	var checkme = field.value;
-	if (!(checkme.match(/^[0-9a-zA-Z`!"?$%\^&*()_\-+={\[}\]:;@~#|<,>.'\/\\]+$/))) {
+	if (!(checkme.match(/^[0-9a-zA-Z\x{0400}-\x{04FF}`!"?$%\^&*()_\-+={\[}\]:;@~#|<,>.'\/\\]+$/))) {
+		if(/\p{S}]+/u.test(field)) return true
 		add_error_to_field(field, error);
 	}
 }

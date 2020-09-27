@@ -5,6 +5,8 @@
  *
  * @package		ProjectSend
  * @subpackage	Classes
+ * 
+ * TODO: Password policy
  */
 
 class ClientActions
@@ -105,9 +107,10 @@ class ClientActions
 		/** Password checks */
 		if (isset($this->validate_password) && $this->validate_password === true) {
 			$valid_me->validate('completed',$this->password,$validation_no_pass);
-			$valid_me->validate('password',$this->password,$validation_valid_pass.' '.$validation_valid_chars);
+			//$valid_me->validate('password',$this->password,$validation_valid_pass.' '.$validation_valid_chars);
 			$valid_me->validate('pass_rules',$this->password,$validation_rules_pass);
 			$valid_me->validate('length',$this->password,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
+			$valid_me->validate('pass_has_pi_data', $this->password, $validation_password_has_pi_data, $arguments['username'], $this->name, $this->email);
 			//$valid_me->validate('pass_match','',$validation_match_pass,'','',$this->password,$this->password_repeat);
 		}
 

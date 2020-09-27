@@ -168,6 +168,7 @@ include_once('../header-unlogged.php');
 								}
 								else {
 									$query_state = 'ok';
+									
 								}
 							}
 

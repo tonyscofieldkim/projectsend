@@ -77,7 +77,7 @@ if (CURRENT_USER_LEVEL != 9) {
 	}
 }
 
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**
 	 * If the user is not an admin, check if the id of the user
 	 * that's being edited is the same as the current logged in one.
@@ -144,13 +144,13 @@ if ($_POST) {
 	$edit_validate = $edit_user->validate_user($edit_arguments);
 
 	/** Create the user if validation is correct. */
-	if ($edit_validate == 1) {
+	
+	if ($valid_me->return_val) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
+		$location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];
+		header("Location: $location");
+		die();
 	}
-
-	$location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];
-	header("Location: $location");
-	die();
 }
 
 $page_title = __('Edit system user', 'cftp_admin');
@@ -196,7 +196,9 @@ include('header.php');
 			/**
 			 * If the form was submited with errors, show them here.
 			 */
-			$valid_me->list_errors();
+			if($_SERVER['REQUEST_METHOD'] == 'POST'){
+				$valid_me->list_errors();
+			}
 			?>
 
 			<?php

@@ -9,6 +9,8 @@
 
 /**
  * System User Roles names
+ * 
+ * TODO: Password policy
  */
 define('USER_ROLE_LVL_9', __('System Administrator','cftp_admin'));
 define('USER_ROLE_LVL_8', __('Account Manager','cftp_admin'));
@@ -34,7 +36,7 @@ $validation_file_size		= __('File size value must be a whole number','cftp_admin
 $validation_no_level		= __('User level was not specified','cftp_admin');
 $add_user_exists			= __('A system user or client with this login name already exists.','cftp_admin');
 $add_user_mail_exists		= __('A system user or client with this e-mail address already exists.','cftp_admin');
-$validation_valid_pass		= __('Your password can only contain letters, numbers and the following characters:','cftp_admin');
+$validation_valid_pass		= __('Your password can only contain European or Asian alphabet letters and cyrillics as well as numbers and any of the following special characters:','cftp_admin');
 $validation_valid_chars		= ('` ! " ? $ ? % ^ & * ( ) _ - + = { [ } ] : ; @ ~ # | < , > . ? \' / \ ');
 $validation_no_title		= __('Title was not completed','cftp_admin');
 
@@ -49,8 +51,10 @@ $validation_length_2 = __('and','cftp_admin');
 $validation_length_3 = __('characters long','cftp_admin');
 $validation_length_user = $validation_length_usr_1.' '.$validation_length_1.' '.MIN_USER_CHARS.' '.$validation_length_2.' '.MAX_USER_CHARS.' '.$validation_length_3;
 $validation_length_pass = $validation_length_pass_1.' '.$validation_length_1.' '.MIN_PASS_CHARS.' '.$validation_length_2.' '.MAX_PASS_CHARS.' '.$validation_length_3;
+$validation_length_pass_system_user = $validation_length_pass_1.' '.$validation_length_1.' '.MIN_PASS_CHARS_SYSTEM_USER.' '.$validation_length_2.' '.MAX_PASS_CHARS.' '.$validation_length_3;
 
-$validation_req_upper	= __('1 uppercase character','cftp_admin');
-$validation_req_lower	= __('1 lowercase character','cftp_admin');
-$validation_req_number	= __('1 number','cftp_admin');
-$validation_req_special	= __('1 special character','cftp_admin');
+$validation_req_upper	= __('contain at least 1 uppercase character from European languages or 1 Unicode characters in Asian languages','cftp_admin');
+$validation_req_lower	= __('contain at least 1 lowercase character from European languages or 1 Unicode characters in Asian languages','cftp_admin');
+$validation_req_number	= __('contain at least 1 base-10 number (0-9)','cftp_admin');
+$validation_req_special	= __('contain at least 1 special character or a diacritic mark','cftp_admin');
+$validation_password_has_pi_data = __('Password cannot contain your username, email or names');

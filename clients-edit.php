@@ -97,7 +97,7 @@ if ($global_level == 0) {
 	}
 }
 
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**
 	 * If the user is not an admin, check if the id of the client
 	 * that's being edited is the same as the current logged in one.
@@ -172,11 +172,10 @@ if ($_POST) {
 		);
 
 		$memberships->update_membership_requests($arguments);
+		$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];
+		header("Location: $location");
+		die();
 	}
-
-	$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];
-	header("Location: $location");
-	die();
 }
 
 $page_title = __('Edit client', 'cftp_admin');
@@ -225,7 +224,9 @@ include('header.php');
 			/**
 			 * If the form was submited with errors, show them here.
 			 */
-			$valid_me->list_errors();
+			if($_SERVER['REQUEST_METHOD'] == 'POST'){
+				$valid_me->list_errors();
+			}
 			?>
 
 			<?php

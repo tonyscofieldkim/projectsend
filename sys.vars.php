@@ -41,7 +41,7 @@ define('DEBUG', false);
  * IS_DEV is set to true during development to show a sitewide remainder
  * of the app unreleased status.
  */
-define('IS_DEV', false);
+define('IS_DEV', true);
 
 /**
  * Turn off reporting of PHP errors, warnings and notices.
@@ -66,13 +66,13 @@ DEFINE('DS', DIRECTORY_SEPARATOR);
  * Define the RSS url to use on the home news list.
  */
 // define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
-define('NEWS_FEED_URI', 'https://www.projectsend.org/serve/news');
+define('NEWS_FEED_URI', 'https://www.xxyprojectsend.org/serve/news');
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
 // define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
-define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
+define('UPDATES_FEED_URI', 'https://xxyprojectsend.org/serve/versions');
 
 /**
  * Check if the personal configuration file exists
@@ -80,8 +80,10 @@ define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
  *
  * @see sys.config.sample.php
  */
+
 if (!file_exists(ROOT_DIR . '/includes/sys.config.php')) {
 	if (!defined('IS_MAKE_CONFIG')) {
+		
 		// the following script returns only after the creation of the configuration file
 		if (defined('IS_INSTALL')) {
 			header('Location:make-config.php');
@@ -149,6 +151,10 @@ define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
+define('TABLE_PASSWORD_HISTORY', TABLES_PREFIX.'password_history');
+define('TABLE_LOGIN_ATTEMPTS', TABLES_PREFIX.'login_attempts');
+
+
 
 $original_basic_tables = array(
 	TABLE_FILES,
@@ -181,10 +187,11 @@ $all_system_tables = array(
  */
 define('MIN_USER_CHARS', 5);
 define('MAX_USER_CHARS', 60);
-define('MIN_PASS_CHARS', 5);
+define('MIN_PASS_CHARS', 12);
+define('MIN_PASS_CHARS_SYSTEM_USER', 15);
 define('MAX_PASS_CHARS', 60);
 
-define('MIN_GENERATE_PASS_CHARS', 10);
+define('MIN_GENERATE_PASS_CHARS', 15);
 define('MAX_GENERATE_PASS_CHARS', 20);
 /*
  * Cookie expiration time (in seconds).
@@ -198,7 +205,7 @@ define('COOKIE_EXP_TIME', 60 * 60 * 24 * 30);
  * Case uses must be analyzed before enabling this function
  */
 define('SESSION_TIMEOUT_EXPIRE', true);
-$session_expire_time = 31 * 24 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds
+$session_expire_time = 2 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds (changed to 2hr)
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /**
@@ -231,7 +238,7 @@ define('SYSTEM_URI', 'https://www.projectsend.org/');
 define('SYSTEM_URI_LABEL', 'ProjectSend on github');
 define('DONATIONS_URL', 'https://www.projectsend.org/donations/');
 /** Previously cFTP */
-define('SYSTEM_NAME', 'ProjectSend');
+define('SYSTEM_NAME', 'PRO-FILES');
 
 define('LOGO_FOLDER', ROOT_DIR . '/img/custom/logo/');
 define('LOGO_THUMB_FOLDER', ROOT_DIR . '/img/custom/thumbs/');

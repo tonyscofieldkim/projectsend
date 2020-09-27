@@ -57,7 +57,7 @@ header("Content-Security-Policy: frame-ancestors none");
 
 						is_complete(this.add_user_form_pass,'<?php echo $validation_no_pass; ?>');
 						//is_complete(this.add_user_form_pass2,'<?php echo $validation_no_pass2; ?>');
-						is_length(this.add_user_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
+						is_length(this.add_user_form_pass,<?php echo MIN_PASS_CHARS_SYSTEM_USER; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
 						is_password(this.add_user_form_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
 						//is_match(this.add_user_form_pass,this.add_user_form_pass2,'<?php echo $validation_match_pass; ?>');
 
@@ -132,7 +132,7 @@ switch ($user_form_type) {
 				</div>
 			</div>
 			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_user_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
-			<?php echo password_notes(); ?>
+			<?php echo password_notes('system_user'); ?>
 		</div>
 	</div>
 

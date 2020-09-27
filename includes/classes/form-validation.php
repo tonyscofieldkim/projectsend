@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class that handles all the server-side form validations.
  *
@@ -7,13 +8,15 @@
  *
  * @package		ProjectSend
  * @subpackage	Classes
+ * 
+ * TODO Check password regex and  ensure errors are actually reported
  */
 
 /**
  * Prepare the error message mark up and content
  */
-$validation_errors_title = __('The following errors were found','cftp_admin');
-$before_error = '<div class="alert alert-danger alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">'.$validation_errors_title.':</p><ol>';
+$validation_errors_title = __('The following errors were found', 'cftp_admin');
+$before_error = '<div class="alert alert-danger alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">' . $validation_errors_title . ':</p><ol>';
 $after_error = '</ol></div>';
 
 class Validate_Form
@@ -23,20 +26,22 @@ class Validate_Form
 	var $error_complete;
 	var $return_val = true;
 
-	public function __construct() {
+	public function __construct()
+	{
 		global $dbh;
 		$this->dbh = $dbh;
-		$this->allowed_upper	= range('A','Z');
-		$this->allowed_lower	= range('a','z');
-		$this->allowed_numbers	= array('0','1','2','3','4','5','6','7','8','9');
-		$this->allowed_symbols	= array('`','!','"','?','$','%','^','&','*','(',')','_','-','+','=','{','[','}',']',':',';','@','~','#','|','<',',','>','.',"'","/",'\\');
+		//add Cyrillic and Diacritic
+		$this->allowed_upper	= range('A', 'Z');
+		$this->allowed_lower	= range('a', 'z');
+		$this->allowed_numbers	= array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		$this->allowed_symbols	= array('`', '!', '"', '?', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '{', '[', '}', ']', ':', ';', '@', '~', '#', '|', '<', ',', '>', '.', "'", "/", '\\');
 	}
 
 	/** Check if the field is complete */
 	private function is_complete($field, $err)
 	{
 		if (strlen(trim($field)) == 0) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -45,7 +50,7 @@ class Validate_Form
 	private function is_email($field, $err)
 	{
 		if (!filter_var($field, FILTER_VALIDATE_EMAIL)) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -53,8 +58,8 @@ class Validate_Form
 	/** Check if the field value is alphanumeric */
 	private function is_alpha($field, $err)
 	{
-		if(preg_match('/[^0-9A-Za-z]/', $field)) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if (preg_match('/[^0-9A-Za-z]/', $field)) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -62,8 +67,8 @@ class Validate_Form
 	/** Check if the field value is a number */
 	private function is_number($field, $err)
 	{
-		if(preg_match('/[^0-9]/', $field)) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if (preg_match('/[^0-9]/', $field)) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -71,8 +76,8 @@ class Validate_Form
 	/** Check if the field value is alphanumeric */
 	private function is_alpha_or_dot($field, $err)
 	{
-		if(preg_match('/[^0-9A-Za-z.]/', $field)) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if (preg_match('/[^0-9A-Za-z.]/', $field)) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -80,17 +85,17 @@ class Validate_Form
 	/** Check if the password field value contains invalid characters */
 	private function is_password($field, $err)
 	{
-		$allowed_characters = array_merge($this->allowed_numbers,$this->allowed_lower,$this->allowed_upper,$this->allowed_symbols);
+		$allowed_characters = array_merge($this->allowed_numbers, $this->allowed_lower, $this->allowed_upper, $this->allowed_symbols);
 
 		$passw = str_split($field);
 		$char_errors = 0;
 		foreach ($passw as $p) {
-			if(!in_array($p,$allowed_characters, TRUE)) {
+			if (!in_array($p, $allowed_characters, TRUE)) {
 				$char_errors++;
 			}
 		}
-		if($char_errors > 0) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if ($char_errors > 0) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -104,50 +109,70 @@ class Validate_Form
 		global $validation_req_special;
 
 		$rules	= array(
-						'lower'		=> array(
-											'value'	=> PASS_REQ_UPPER,
-											'chars'	=> $this->allowed_lower,
-										),
-						'upper'		=> array(
-											'value'	=> PASS_REQ_LOWER,
-											'chars'	=> $this->allowed_upper,
-										),
-						'number'	=> array(
-											'value'	=> PASS_REQ_NUMBER,
-											'chars'	=> $this->allowed_numbers,
-										),
-						'special'	=> array(
-											'value'	=> PASS_REQ_SPECIAL,
-											'chars'	=> $this->allowed_symbols,
-										),
-					);
-	
+			'lower'		=> array(
+				'value'	=> PASS_REQ_UPPER,
+				'chars'	=> $this->allowed_lower,
+			),
+			'upper'		=> array(
+				'value'	=> PASS_REQ_LOWER,
+				'chars'	=> $this->allowed_upper,
+			),
+			'number'	=> array(
+				'value'	=> PASS_REQ_NUMBER,
+				'chars'	=> $this->allowed_numbers,
+			),
+			'special'	=> array(
+				'value'	=> PASS_REQ_SPECIAL,
+				'chars'	=> $this->allowed_symbols,
+			),
+		);
+
 		$rules_active = array();
-		foreach ( $rules as $rule => $data ) {
-			if ( $data['value'] == '1' ) {
+		foreach ($rules as $rule => $data) {
+			if ($data['value'] == '1') {
 				$rules_active[$rule] = $data['chars'];
 			}
 		}
-		
-		if ( count( $rules_active ) > 0 ) {
+
+		if (count($rules_active) > 0) {
 			$passw = str_split($field);
 			$char_errors = 0;
-
-			foreach ( $rules_active as $rule => $characters ) {
+			$field_has_no_upper = null;
+			$field_has_no_lower = null;
+			foreach ($rules_active as $rule => $characters) {
 				$found = 0;
-				foreach ( $characters as $character ) {
-					if ( strpos( $field, $character ) !== false) {
+
+				foreach ($characters as $character) {
+					if (strpos($field, $character) !== false) {
 						$found++;
 					}
 				}
-				if ( $found === 0 ) {
-					$char_errors++;
+				if ($found === 0) {
+					if ($rule == 'upper' || $rule == 'lower') {
+						if ($rule == 'upper') {
+							$field_has_no_upper = true;
+						} else {
+							$field_has_no_lower = true;
+						}
+					} else {
+						$char_errors++;
+					}
 				}
 			}
 
-			if($char_errors > 0) {
-				$this->error_msg .= '<li>'.$err.'</li>';
+			if ($char_errors > 0) {
+				$this->error_msg .= '<li>' . $err . '</li>';
 				$this->return_val = false;
+			} else {
+				if ($field_has_no_upper == true || $field_has_no_lower == true) {
+					$hasCyrillic = preg_match("/[\x{0400}-\x{04FF}]/u", $field);
+					$hasOtherUnicodeChars = preg_match("/[\p{S}]+/u", $field);
+
+					if (!$hasCyrillic && !$hasOtherUnicodeChars) {
+						$this->error_msg .= '<li>' . $err . '</li>';
+						$this->return_val = false;
+					}
+				}
 			}
 		}
 	}
@@ -155,8 +180,8 @@ class Validate_Form
 	/** Check if the character count is within range */
 	private function is_length($field, $err, $min, $max)
 	{
-		if(strlen($field) < $min || strlen($field) > $max){
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if (strlen($field) < $min || strlen($field) > $max) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -164,8 +189,26 @@ class Validate_Form
 	/** Check if both password fields match */
 	function is_pass_match($err, $pass1, $pass2)
 	{
-		if($pass1 != $pass2) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if ($pass1 != $pass2) {
+			$this->error_msg .= '<li>' . $err . '</li>';
+			$this->return_val = false;
+		}
+	}
+	/**
+	 * Check if password contains username or name or email of this account
+	 *
+	 */
+	private function password_has_account_infos($field, $err, $username, $name, $email)
+	{
+		$posUsername = strpos(strtoupper($field), strtoupper(str_ireplace(' ', '', $username)));
+		$posName = strpos(strtoupper($field), strtoupper(str_ireplace(' ', '', $name)));
+		$posEmail = strpos(strtoupper($field), strtoupper(str_ireplace(' ', '', $email)));
+		if(
+			$posUsername ||
+			$posName ||
+			$posEmail
+		){
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -176,15 +219,15 @@ class Validate_Form
 	 */
 	private function is_user_exists($field, $err)
 	{
-		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user = :user");
 		$this->statement->execute(
-							array(
-								':user'	=> $field,
-							)
-						);
+			array(
+				':user'	=> $field,
+			)
+		);
 
-		if ( $this->statement->rowCount() > 0 ) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if ($this->statement->rowCount() > 0) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -197,8 +240,8 @@ class Validate_Form
 	{
 		$this->sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
 		$this->params = array(
-							':email'	=> $field
-						);
+			':email'	=> $field
+		);
 		/**
 		 * If the ID parameter is set, the validation is used when editing
 		 * a client or user, and prevents an error if the current user is
@@ -210,10 +253,10 @@ class Validate_Form
 			$this->params[':id'] = $current_id;
 		}
 
-		$this->statement = $this->dbh->prepare( $this->sql_users );
-		$this->statement->execute( $this->params );
-		if ( $this->statement->rowCount() > 0 ) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		$this->statement = $this->dbh->prepare($this->sql_users);
+		$this->statement->execute($this->params);
+		if ($this->statement->rowCount() > 0) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
@@ -221,53 +264,56 @@ class Validate_Form
 	/** Check if the recaptcha response is ok */
 	private function recaptcha_verify($field, $err)
 	{
-		if( !strstr($field, "true" ) ) {
-			$this->error_msg .= '<li>'.$err.'</li>';
+		if (!strstr($field, "true")) {
+			$this->error_msg .= '<li>' . $err . '</li>';
 			$this->return_val = false;
 		}
 	}
 
 
 	/** Call the requested method and pass the corresponding values */
-	function validate($val_type, $field, $err='', $min='', $max='', $pass1='', $pass2='', $row='', $current_id='')
+	function validate($val_type, $field, $err = '', $min = '', $max = '', $pass1 = '', $pass2 = '', $row = '', $current_id = '')
 	{
-		switch($val_type) {
+		switch ($val_type) {
 			case 'completed':
 				$this->is_complete($field, $err);
-			break;
+				break;
 			case 'email':
 				$this->is_email($field, $err);
-			break;
+				break;
 			case 'alpha':
 				$this->is_alpha($field, $err);
-			break;
+				break;
 			case 'number':
 				$this->is_number($field, $err);
-			break;
+				break;
 			case 'alpha_dot':
 				$this->is_alpha_or_dot($field, $err);
-			break;
+				break;
 			case 'password':
 				$this->is_password($field, $err);
-			break;
+				break;
 			case 'pass_rules':
 				$this->is_password_rules($field, $err);
+				break;
+			case 'pass_has_pi_data':
+				$this->password_has_account_infos($field, $err, $min, $max, $pass1);
 			break;
 			case 'length':
 				$this->is_length($field, $err, $min, $max);
-			break;
+				break;
 			case 'pass_match':
 				$this->is_pass_match($err, $pass1, $pass2);
-			break;
+				break;
 			case 'user_exists':
 				$this->is_user_exists($field, $err);
-			break;
+				break;
 			case 'email_exists':
 				$this->is_email_exists($field, $err, $current_id);
-			break;
+				break;
 			case 'recaptcha':
 				$this->recaptcha_verify($field, $err);
-			break;
+				break;
 		}
 	}
 
@@ -279,17 +325,15 @@ class Validate_Form
 	{
 		if (!empty($this->error_msg)) {
 			/** Create the message to be returned */
-			$this->error_msg = $GLOBALS['before_error'].$this->error_msg.$GLOBALS['after_error'];
+			$this->error_msg = $GLOBALS['before_error'] . $this->error_msg . $GLOBALS['after_error'];
 			echo $this->error_msg;
 			$this->return_val = false;
 			/** Reset the errors list */
 			$this->error_msg = '';
-		}
-		else {
+		} else {
 			$this->return_val = true;
 		}
 	}
-	
 }
 
 $valid_me = new Validate_Form();

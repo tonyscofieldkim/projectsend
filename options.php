@@ -16,6 +16,9 @@
  * =============== CROSS-FRAME SCRIPTING SECURITY ============
  * Add CSP Headers before rendering
  * Add the Backward compatible X-Frame Options too.
+ * 
+ * 
+ * TODO: Add more options here, for the user password frequency
  */
 
 header("X-Frame-Options: DENY");
@@ -410,7 +413,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="clients_can_register">
-									<input type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
+									<input disabled title="Cannot mutate critical setting" type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
 								</label>
 							</div>
 						</div>
@@ -763,7 +766,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_upper">
-									<input type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
+									<input disabled title="Cannot mutate critical setting" type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
 								</label>
 							</div>
 						</div>
@@ -771,7 +774,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_lower">
-									<input type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
+									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
 								</label>
 							</div>
 						</div>
@@ -779,7 +782,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_number">
-									<input type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
+									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
 								</label>
 							</div>
 						</div>
@@ -787,13 +790,49 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_special">
-									<input type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
+									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
 								</label>
 							</div>
 						</div>
-
 						<div class="options_divide"></div>
-
+						<h3><?php _e('Login Attempts', 'cftp_admin')?></h3>
+						<p> <?php _e('Control login attempts in order to secure accounts') ?> </p>
+						<div class="form-group">
+								<label for="max_login_attempts" class="col-sm-4 control-label"><?php _e('Maximum number of attempts', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="max_login_attempts" id="max_login_attempts" class="form-control">
+										<option value="3" <?php echo (MAX_LOGIN_ATTEMPTS == '3') ? 'selected="selected"' : ''; ?>><?php _e('3 times', 'cftp_admin'); ?></option>
+										<option value="6" <?php echo (MAX_LOGIN_ATTEMPTS == '6') ? 'selected="selected"' : ''; ?>><?php _e('6 times', 'cftp_admin'); ?></option>
+										<option value="10" <?php echo (MAX_LOGIN_ATTEMPTS == '10') ? 'selected="selected"' : ''; ?>><?php _e('10 times', 'cftp_admin'); ?></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="max_login_interval" class="col-sm-4 control-label"><?php _e('Lock Interval', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="max_login_interval" id="max_login_interval" class="form-control">
+										<option value="600" <?php echo (MAX_LOGIN_INTERVAL == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
+										<option value="900" <?php echo (MAX_LOGIN_INTERVAL == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="max_login_lockout_duration" class="col-sm-4 control-label"><?php _e('Lockout For Duration of:', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="max_login_lockout_duration" id="max_login_lockout_duration" class="form-control">
+									<option value="120" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '120') ? 'selected="selected"' : ''; ?>><?php _e('2 minutes (for testing only)', 'cftp_admin'); ?></option>
+										<option value="600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
+										<option value="900" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
+										<option value="1800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '1800') ? 'selected="selected"' : ''; ?>><?php _e('30 minutes', 'cftp_admin'); ?></option>
+										<option value="2700" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '2700') ? 'selected="selected"' : ''; ?>><?php _e('45 minutes', 'cftp_admin'); ?></option>
+										<option value="3600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '3600') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour', 'cftp_admin'); ?></option>
+										<option value="5400" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '5400') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour 30 minutes', 'cftp_admin'); ?></option>
+										<option value="7200" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '7200') ? 'selected="selected"' : ''; ?>><?php _e('2 Hours', 'cftp_admin'); ?></option>
+										<option value="10800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '10800') ? 'selected="selected"' : ''; ?>><?php _e('3 Hours', 'cftp_admin'); ?></option>
+									</select>
+								</div>
+							</div>
+						<div class="options_divide"></div>
 						<h3><?php _e('reCAPTCHA', 'cftp_admin'); ?></h3>
 						<p><?php _e('Helps prevent SPAM on your registration form.', 'cftp_admin'); ?></p>
 
