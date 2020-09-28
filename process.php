@@ -103,7 +103,10 @@ class process
 				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 				$this->row = $this->statement->fetch();
 				$this->attemptsCounted = $this->row['attempts'];
+				
+
 				if(intval($this->attemptsCounted) >= $this->max_attempts){
+					
 					$this->statement = $this->dbh->prepare('SELECT time_when FROM '. TABLE_LOGIN_ATTEMPTS. ' ORDER BY time_when DESC LIMIT 2');
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
