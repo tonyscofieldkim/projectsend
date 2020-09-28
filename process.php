@@ -91,8 +91,31 @@ class process
 					$this->logged_id		= $this->row['id'];
 					$this->global_name		= html_output($this->row['name']);
 				}
-				$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
-				if ($this->check_password) {
+				$this->max_attempts = intval(MAX_LOGIN_ATTEMPTS) > 0 ? intval(MAX_LOGIN_ATTEMPTS) : 6;
+				$this->attempts_interval = intval(MAX_LOGIN_INTERVAL) > 0 ? intval(MAX_LOGIN_INTERVAL) : 900;
+				$this->attempts_lockout_duration = intval(MAX_LOGIN_LOCKOUT_DURATION) > 0 ? intval(MAX_LOGIN_LOCKOUT_DURATION) : 1800;
+
+				$this->statement = $this->dbh->prepare('SELECT COUNT(*) AS attempts FROM  '.TABLE_LOGIN_ATTEMPTS.' WHERE time_when >= :t_minus AND time_when <= :t_now');
+				$this->statement->execute(array(
+					':t_minus' => time() - $this->attempts_interval,
+					':t_now' => time()
+				));
+				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+				$this->row = $this->statement->fetch();
+				$this->attemptsCounted = $this->row['attempts'];
+				if(intval($this->attemptsCounted) >= $this->max_attempts){
+					$this->statement = $this->dbh->prepare('SELECT time_when FROM '. TABLE_LOGIN_ATTEMPTS. ' ORDER BY time_when DESC LIMIT 2');
+					$this->statement->execute();
+					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+					$this->row = $this->statement->fetch();
+					$this->lastFailed = intval($this->row['time_when']);
+					$this->tryAfter = (time() - intval(($this->lastFailed)));
+					$this->errorState = 'max_login_attempts_reached';
+				}
+				else{
+					//max attempts not reached
+					$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
+					if ($this->check_password) {
 					//if ($db_pass == $sysuser_password) {
 					if ($this->active_status != '0') {
 						/** Set SESSION values */
@@ -118,7 +141,12 @@ class process
 							$this->access_string	= $this->sysuser_username;
 							$_SESSION['access']		= html_output($this->sysuser_username);
 						}
+						/**remove login attempts */
 
+						$this->statement = $this->dbh->prepare('DELETE FROM '. TABLE_LOGIN_ATTEMPTS. ' WHERE uid = :uid');
+						$this->statement->execute(array(
+							':uid' => $this->logged_id
+						));
 						/** Record the action log */
 						$this->new_log_action = new LogActions();
 						$this->log_action_args = array(
@@ -155,8 +183,17 @@ class process
 					}
 				} else {
 					//$errorstate = 'wrong_password';
+					$this->statement = $this->dbh->prepare('INSERT INTO '.TABLE_LOGIN_ATTEMPTS.' uid = :uid, time_when = :time_when');
+					$this->statement->execute(array(
+						'uid' => $this->logged_id,
+						'time_when' => time()
+					));
 					$this->errorstate = 'invalid_credentials';
 				}
+			}
+
+				
+				
 			} else {
 				//$errorstate = 'wrong_username';
 				$this->errorstate = 'invalid_credentials';
@@ -194,6 +231,9 @@ class process
 					break;
 				case 'access_denied':
 					$this->login_err_message = __('You must approve the requested permissions to sign in with Google.', 'cftp_admin');
+					break;
+				case 'max_login_attempts_reachead':
+					$this->login_err_message = __('You have tried logging in too many times. Please try again after'. intval($this->tryAfter/60).' minutes', 'cftp_admin');
 					break;
 			}
 		}
