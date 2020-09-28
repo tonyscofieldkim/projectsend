@@ -441,7 +441,7 @@ if (defined('TRY_INSTALL')) {
 			),
 			'18' => array(
 				'table' => '',
-				'query' => 'INSERT INTO '.TABLE_PASSWORD_HISTORY.' (`uid`, `password_number`, `creation_time` `hash_val`, `creation_time`) VALUES(:uid, :password_number, :creation_time, :hash_val)',
+				'query' => 'INSERT INTO '.TABLE_PASSWORD_HISTORY.' (`uid`, `password_number`, `creation_time`, `hash_val`, `creation_time`) VALUES(:uid, :password_number, :creation_time, :hash_val)',
 				'params' => array(
 					':uid' => 1,
 					':password_number' => 1,
