@@ -87,6 +87,7 @@ class UserActions
 			$valid_me->validate('pass_rules',$this->password,$validation_rules_pass);
 			$valid_me->validate('length',$this->password,$validation_length_pass_system_user,MIN_PASS_CHARS_SYSTEM_USER,MAX_PASS_CHARS);
 			$valid_me->validate('pass_has_pi_data', $this->password, $validation_password_has_pi_data, $arguments['username'], $this->name, $this->email);
+			$valid_me->validate('password_not_recent',$this->password, $validation_password_is_recent, $this->id);
 			//$valid_me->validate('pass_match','',$validation_match_pass,'','',$this->password,$this->password_repeat);
 		}
 
@@ -139,6 +140,18 @@ class UserActions
 				$this->state['query'] = 1;
 				$this->state['new_id'] = $this->dbh->lastInsertId();
 
+				try {
+					$this->sql_query = $this->dbh->prepare('INSERT INTO '.TABLE_PASSWORD_HISTORY.' (uid,creation_time,hash_val) VALUES(:uid,:creation_time,:hash_val)');
+					$time_ = time();
+					$id_ = $this->state['new_id'];
+
+					$this->sql_query->bindParam(':uid', $id_, PDO::PARAM_INT);
+					$this->sql_query->bindParam(':creation_time', $time_, PDO::PARAM_INT);
+					$this->sql_query->bindParam(':hash_val', $this->enc_password, PDO::PARAM_STR);
+					$this->sql_query->execute();
+				} catch (PDOException $th) {
+					
+				}
 				/** Send account data by email */
 				$this->notify_user = new PSend_Email();
 				$this->email_arguments = array(
@@ -223,7 +236,20 @@ class UserActions
 			}
 
 			$this->sql_query->execute();
-
+			if(!empty($arguments['password'])){
+				try {
+					$this->sql_query = $this->dbh->prepare('INSERT INTO '.TABLE_PASSWORD_HISTORY.' (uid,creation_time,hash_val) VALUES(:uid,:creation_time,:hash_val)');
+					$time_ = time();
+					$id_ = $this->id;
+	
+					$this->sql_query->bindParam(':uid', $id_, PDO::PARAM_INT);
+					$this->sql_query->bindParam(':creation_time', $time_, PDO::PARAM_INT);
+					$this->sql_query->bindParam(':hash_val', $this->enc_password, PDO::PARAM_STR);
+					$this->sql_query->execute();
+				} catch (PDOException $th) {
+					
+				}
+			}
 
 			if ($this->sql_query) {
 				$this->state['query'] = 1;

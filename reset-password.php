@@ -77,11 +77,19 @@ include('header-unlogged.php');
 	}
 
 	/** The form was submitted */
-	if ($_POST) {
+	if ($_POST || (isset($_GET['must_change_0'])&& isset($_GET['mail']))) {
 		/**
 		 * Clean the posted form values.
 		 */
-		$form_type = encode_html($_POST['form_type']);
+		$reset_email = false;
+		if(isset($_GET['must_change_0'])){
+			$form_type = 'new_request';
+			$reset_email = $_GET['mail'];
+		}
+		else{
+			$form_type = encode_html($_POST['form_type']);
+		}
+		
 		
 		switch ($form_type) {
 
@@ -90,7 +98,8 @@ include('header-unlogged.php');
 			 */
 			case 'new_request':
 				$sql_user = $dbh->prepare("SELECT id, user, name, email, level FROM " . TABLE_USERS . " WHERE email = :email");
-				$sql_user->bindParam(':email', $_POST['reset_password_email']);
+				$reset_email_ = $reset_email ? $reset_email : $_POST['reset_password_email'];
+				$sql_user->bindParam(':email',$reset_email_ );
 				$sql_user->execute();
 				$count_user = $sql_user->rowCount();
 		
@@ -164,6 +173,7 @@ include('header-unlogged.php');
 					$minPwd = $level > 0 ? MIN_PASS_CHARS_SYSTEM_USER : MIN_PASS_CHARS;
 					$valid_me->validate('length',$reset_password_new,$validation_length_pass,$minPwd,MAX_PASS_CHARS);
 					$valid_me->validate('pass_has_pi_data', $reset_password_new, $validation_password_has_pi_data, $username, $name, $email);
+					$valid_me->validate('password_not_recent',$reset_password_new, $validation_password_is_recent, $got_user_id);
 			
 					if ($valid_me->return_val) {
 	
@@ -181,7 +191,19 @@ include('header-unlogged.php');
 												);
 							$sql_query->bindParam(':password', $enc_password);
 							$sql_query->bindParam(':id', $got_user_id, PDO::PARAM_INT);
-							$sql_query->execute();							
+							$sql_query->execute();
+							try {
+								$sql_query = $dbh->prepare('INSERT INTO '.TABLE_PASSWORD_HISTORY.' (uid,creation_time,hash_val) VALUES(:uid,:creation_time,:hash_val)');
+								$time_ = time();
+								
+				
+								$sql_query->bindParam(':uid', $got_user_id, PDO::PARAM_INT);
+								$sql_query->bindParam(':creation_time', $time_, PDO::PARAM_INT);
+								$sql_query->bindParam(':hash_val', $enc_password, PDO::PARAM_STR);
+								$sql_query->execute();
+							} catch (PDOException $th) {
+								
+							}						
 					
 							if ($sql_query) {
 								$state['reset'] = 1;

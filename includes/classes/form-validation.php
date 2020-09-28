@@ -214,6 +214,31 @@ class Validate_Form
 	}
 
 	/**
+	 * Check if the password provided has been used recently
+	 */
+	private function password_not_recent($field, $err, $id){
+		global $hasher;
+		$this->statement = $this->dbh->prepare("SELECT creation_time,hash_val FROM ". TABLE_PASSWORD_HISTORY." WHERE uid = :uid ORDER BY creation_time DESC LIMIT 10");
+		$this->statement->bindParam(':uid', $id, PDO::PARAM_INT);
+		$this->statement->execute();
+		$rowCounts = $this->statement->rowCount();
+		$isFound = false;
+		if($rowCounts > 0){
+			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+			while($row = $this->statement->fetch()){
+				$isFound = $hasher->CheckPassword($field, $row['hash_val']);
+				if($isFound){
+				break;
+				}
+			}
+			if($isFound){
+				$this->error_msg .= '<li>' . $err . '</li>';
+				$this->return_val = false;
+			}
+		}
+	}
+
+	/**
 	 * Check if the supplied username already exists on either a client or
 	 * a system user.
 	 */
@@ -298,6 +323,9 @@ class Validate_Form
 				break;
 			case 'pass_has_pi_data':
 				$this->password_has_account_infos($field, $err, $min, $max, $pass1);
+			break;
+			case 'password_not_recent':
+				$this->password_not_recent($field, $err, $min);
 			break;
 			case 'length':
 				$this->is_length($field, $err, $min, $max);

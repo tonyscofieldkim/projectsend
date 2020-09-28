@@ -1132,7 +1132,7 @@ function password_notes($user_type = '')
 	}
 
 	if (count($rules_active) > 0) {
-		$pass_notes_output = '<p class="field_note">' . __('<strong>The password must meet the following requirements:', 'cftp_admin') . '</strong><br />';
+		$pass_notes_output = '<p class="field_note">' . __('<strong>The password must meet the following requirements:', 'cftp_admin') . '</strong><br/>';
 		$ind = 1;
 		foreach ($rules_active as $rule => $text) {
 			$pass_notes_output .= $ind .'. '. $text . '<br>';

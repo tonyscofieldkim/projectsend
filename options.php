@@ -413,7 +413,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="clients_can_register">
-									<input disabled title="Cannot mutate critical setting" type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
+									<input  disabled title="Cannot Mutate Value" type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER > 20) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
 								</label>
 							</div>
 						</div>
@@ -766,7 +766,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_upper">
-									<input disabled title="Cannot mutate critical setting" type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
+									<input  title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
 								</label>
 							</div>
 						</div>
@@ -774,7 +774,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_lower">
-									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
+									<input title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
 								</label>
 							</div>
 						</div>
@@ -782,7 +782,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_number">
-									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
+									<input  title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
 								</label>
 							</div>
 						</div>
@@ -790,10 +790,41 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_special">
-									<input disabled title="Cannot mutate critical setting"  type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
+									<input title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
 								</label>
 							</div>
 						</div>
+						<div class="options_divide"></div>
+						<h3><?php _e('Passwords expiry', 'cftp_admin')?></h3>
+						<p> <?php _e('Control password lifetime for the different account types') ?> </p>
+						<div class="form-group">
+								<label for="system_password_expires_after" class="col-sm-4 control-label"><?php _e('SystemUser password expires after:', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="system_password_expires_after" id="system_password_expires_after" class="form-control">
+										<option value="0" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
+										<option value="300" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
+										<option value="1296000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
+										<option value="2592000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
+										<option value="5184000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
+										<option value="7776000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
+										
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="client_password_expires_after" class="col-sm-4 control-label"><?php _e('Client Account password expires after:', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="client_password_expires_after" id="client_password_expires_after" class="form-control">
+										<option value="0" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
+										<option value="300" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
+										<option value="1296000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
+										<option value="2592000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
+										<option value="5184000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
+										<option value="7776000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
+										
+									</select>
+								</div>
+							</div>
 						<div class="options_divide"></div>
 						<h3><?php _e('Login Attempts', 'cftp_admin')?></h3>
 						<p> <?php _e('Control login attempts in order to secure accounts') ?> </p>

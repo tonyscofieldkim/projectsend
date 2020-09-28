@@ -89,114 +89,215 @@ class process
 					$this->user_level		= $this->row["level"];
 					$this->active_status	= $this->row['active'];
 					$this->logged_id		= $this->row['id'];
+					$this->logged_mail = $this->row['email'];
 					$this->global_name		= html_output($this->row['name']);
 				}
+
 				$this->max_attempts = intval(MAX_LOGIN_ATTEMPTS) > 0 ? intval(MAX_LOGIN_ATTEMPTS) : 6;
 				$this->attempts_interval = intval(MAX_LOGIN_INTERVAL) > 0 ? intval(MAX_LOGIN_INTERVAL) : 900;
 				$this->attempts_lockout_duration = intval(MAX_LOGIN_LOCKOUT_DURATION) > 0 ? intval(MAX_LOGIN_LOCKOUT_DURATION) : 1800;
 
-				$this->statement = $this->dbh->prepare('SELECT COUNT(*) AS attempts FROM  '.TABLE_LOGIN_ATTEMPTS.' WHERE time_when >= :t_minus AND time_when <= :t_now');
-				$this->statement->execute(array(
-					':t_minus' => time() - $this->attempts_interval,
-					':t_now' => time()
-				));
-				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-				$this->row = $this->statement->fetch();
-				$this->attemptsCounted = $this->row['attempts'];
-				
+				$this->tryAfter = false;
+				try {
+					$this->statement = $this->dbh->prepare('SELECT `time_when`, `is_lock_point` FROM ' . TABLE_LOGIN_ATTEMPTS . ' WHERE `uid` = :uid ORDER BY `time_when` DESC LIMIT 2');
 
-				if(intval($this->attemptsCounted) >= $this->max_attempts){
-					
-					$this->statement = $this->dbh->prepare('SELECT time_when FROM '. TABLE_LOGIN_ATTEMPTS. ' ORDER BY time_when DESC LIMIT 2');
+					$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+
 					$this->statement->execute();
-					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-					$this->row = $this->statement->fetch();
-					$this->lastFailed = intval($this->row['time_when']);
-					$this->tryAfter = (time() - intval(($this->lastFailed)));
-					$this->errorState = 'max_login_attempts_reached';
-				}
-				else{
-					//max attempts not reached
-					$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
-					if ($this->check_password) {
-					//if ($db_pass == $sysuser_password) {
-					if ($this->active_status != '0') {
-						/** Set SESSION values */
-						$_SESSION['loggedin']	= html_output($this->sysuser_username);
-						$_SESSION['userlevel']	= $this->user_level;
-						$_SESSION['lang']		= $this->selected_form_lang;
+					$count = $this->statement->rowCount();
 
-						/**
-						 * Language cookie
-						 * TODO: Implement.
-						 * Must decide how to refresh language in the form when the user
-						 * changes the language <select> field.
-						 * By using a cookie and not refreshing here, the user is
-						 * stuck in a language and must use it to recover password or
-						 * create account, since the lang cookie is only at login now.
-						 */
-						//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
+					if ($count > 0) {
+						$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+						$this->row = $this->statement->fetch();
+						$this->lastFailed = intval($this->row['time_when']);
+						$this->hasLock = $this->row['is_lock_point'] > 0;
+						$this->tryAfter = $this->attempts_lockout_duration - (time() - intval(($this->lastFailed)));
+					} //if any attempt found
 
-						if ($this->user_level != '0') {
-							$this->access_string	= 'admin';
-							$_SESSION['access']		= $this->access_string;
-						} else {
-							$this->access_string	= $this->sysuser_username;
-							$_SESSION['access']		= html_output($this->sysuser_username);
-						}
-						/**remove login attempts */
+					if ($this->hasLock && $this->tryAfter > 0) {
 
-						$this->statement = $this->dbh->prepare('DELETE FROM '. TABLE_LOGIN_ATTEMPTS. ' WHERE uid = :uid');
-						$this->statement->execute(array(
-							':uid' => $this->logged_id
-						));
-						/** Record the action log */
-						$this->new_log_action = new LogActions();
-						$this->log_action_args = array(
-							'action' => 1,
-							'owner_id' => $this->logged_id,
-							'owner_user' => $this->global_name,
-							'affected_account_name' => $this->global_name
-						);
-						$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
-
-						$results = array(
-							'status'	=> 'success',
-							'message'	=> __('Login success. Redirecting...', 'cftp_admin'),
-						);
-						if ($this->user_level == '0') {
-							$results['location']	= BASE_URI . "my_files/";
-						} else {
-							$results['location']	= BASE_URI . "home.php";
+						$this->errorstate = 'max_login_attempts_reached';
+					} //has lock
+					else {
+						if ($this->tryAfter !== false && $this->tryAfter <= 0) {
+							//reset the database to allow login asap
+							$this->statement = $this->dbh->prepare('DELETE FROM ' . TABLE_LOGIN_ATTEMPTS . ' WHERE `uid` = :uid');
+							$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+							$this->statement->execute();
 						}
 
-						/** Using an external form */
-						if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
-							/** Success */
-							if ($results['status'] == 'success') {
-								header('Location: ' . $results['location']);
-								exit;
+						$this->statement = $this->dbh->prepare('SELECT COUNT(`uid`) AS `attempts` FROM ' . TABLE_LOGIN_ATTEMPTS . ' WHERE `time_when` > :t_minus AND `time_when` AND `uid` = :uid');
+						$time_now = time();
+						$t_minus = $time_now - $this->attempts_interval;
+
+						$this->statement->bindParam(':t_minus', $t_minus, PDO::PARAM_INT);
+						$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+						$this->statement->execute();
+
+						$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+						$this->row = $this->statement->fetch();
+						$this->attemptsCounted = $this->row['attempts'];
+
+						if (intval($this->attemptsCounted) >= $this->max_attempts) {
+
+							$this->statement = $this->dbh->prepare('SELECT `time_when` FROM ' . TABLE_LOGIN_ATTEMPTS . ' WHERE `uid` = :uid ORDER BY `time_when` DESC LIMIT 2');
+
+							$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+
+							$this->statement->execute();
+							$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+							$this->row = $this->statement->fetch();
+							$this->lastFailed = intval($this->row['time_when']);
+							$this->tryAfter = $this->attempts_lockout_duration - (time() - intval(($this->lastFailed)));
+							if ($this->tryAfter <= 0) {
+								$this->tryAfter = 60; //avoid illegal division or negative time
 							}
-						}
+							//acquire lock
 
-						echo json_encode($results);
-						exit;
-					} else {
-						$this->errorstate = 'inactive_client';
-					}
-				} else {
-					//$errorstate = 'wrong_password';
-					$this->statement = $this->dbh->prepare('INSERT INTO '.TABLE_LOGIN_ATTEMPTS.' uid = :uid, time_when = :time_when');
-					$this->statement->execute(array(
-						'uid' => $this->logged_id,
-						'time_when' => time()
-					));
-					$this->errorstate = 'invalid_credentials';
+							$this->statement = $this->dbh->prepare('UPDATE ' . TABLE_LOGIN_ATTEMPTS . ' SET `is_lock_point` = 1 WHERE `uid` = :uid AND `time_when` = :lastfailed');
+
+							$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+							$this->statement->bindParam(':lastfailed', $this->lastFailed, PDO::PARAM_INT);
+							$this->statement->execute();
+							$this->errorstate = 'max_login_attempts_reached';
+						} else {
+							//max attempts not reached
+
+							$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
+							if ($this->check_password) {
+								/**remove login attempts */
+								$this->statement = $this->dbh->prepare('DELETE FROM ' . TABLE_LOGIN_ATTEMPTS . ' WHERE uid = :uid');
+								$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+								$this->statement->execute();
+
+								//check if password is expired
+								$expires_after = CLIENT_PASSWORD_EXPIRE_AFTER;
+								if($this->user_level != '0'){
+									$expires_after = SYS_PASSWORD_EXPIRE_AFTER;
+								}
+								$rowCount = 20;
+								$this->passwordExpired = false;
+
+								$no_expire_check = intval($expires_after) < 1;
+								if(!$no_expire_check){
+								$this->statement = $this->dbh->prepare('SELECT creation_time FROM '.TABLE_PASSWORD_HISTORY. ' WHERE uid = :uid ORDER BY creation_time DESC LIMIT 2');
+
+								$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT );
+								$this->statement->execute();
+								$rowCount = $this->statement->rowCount();
+								
+								if($rowCount > 0){
+									$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+									$row = $this->statement->fetch();
+									$creation_time = $row['creation_time'];
+									$time_ = time();
+									$expires_after = intval($expires_after);
+									if(($expires_after + $creation_time) < $time_){
+										$this->passwordExpired = true;
+									}
+								}
+								
+							}
+
+								if (($this->passwordExpired || $rowCount < 1) && !$no_expire_check) {
+									//do stuff
+									$this->errorstate = 'password_expired';
+								} else {
+									//if ($db_pass == $sysuser_password) {
+
+									
+
+
+
+
+									if ($this->active_status != '0') {
+										/** Set SESSION values */
+										$_SESSION['loggedin']	= html_output($this->sysuser_username);
+										$_SESSION['userlevel']	= $this->user_level;
+										$_SESSION['lang']		= $this->selected_form_lang;
+
+										/**
+										 * Language cookie
+										 * TODO: Implement.
+										 * Must decide how to refresh language in the form when the user
+										 * changes the language <select> field.
+										 * By using a cookie and not refreshing here, the user is
+										 * stuck in a language and must use it to recover password or
+										 * create account, since the lang cookie is only at login now.
+										 */
+										//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
+
+										if ($this->user_level != '0') {
+											$this->access_string	= 'admin';
+											$_SESSION['access']		= $this->access_string;
+										} else {
+											$this->access_string	= $this->sysuser_username;
+											$_SESSION['access']		= html_output($this->sysuser_username);
+										}
+
+										/** Record the action log */
+										$this->new_log_action = new LogActions();
+										$this->log_action_args = array(
+											'action' => 1,
+											'owner_id' => $this->logged_id,
+											'owner_user' => $this->global_name,
+											'affected_account_name' => $this->global_name
+										);
+										$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+
+										$results = array(
+											'status'	=> 'success',
+											'message'	=> __('Login success. Redirecting...', 'cftp_admin'),
+										);
+										if ($this->user_level == '0') {
+											$results['location']	= BASE_URI . "my_files/";
+										} else {
+											$results['location']	= BASE_URI . "home.php";
+										}
+
+										/** Using an external form */
+										if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
+											/** Success */
+											if ($results['status'] == 'success') {
+												header('Location: ' . $results['location']);
+												exit;
+											}
+										}
+
+										echo json_encode($results);
+										exit;
+									} else {
+										$this->errorstate = 'inactive_client';
+									}
+								}
+								//end password check ok
+							} else {
+								//$errorstate = 'wrong_password';
+								try {
+									//code...
+									$this->statement = $this->dbh->prepare('INSERT INTO ' . TABLE_LOGIN_ATTEMPTS . ' (uid,time_when) VALUES (:uid,:time_when)');
+
+									$time_nows = time();
+									$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+									$this->statement->bindParam(':time_when', $time_nows, PDO::PARAM_INT);
+
+									$this->statement->execute();
+								} catch (PDOException $th) {
+									//throw $th;
+									exit('db_error');
+								}
+								$this->errorstate = 'invalid_credentials';
+							}
+						} //max attempts not reached
+					} //check if we need to lock
+
+
+
+				} catch (PDOException $th) {
+					//throw $th;
+					
+					exit('db_error');
 				}
-			}
-
-				
-				
 			} else {
 				//$errorstate = 'wrong_username';
 				$this->errorstate = 'invalid_credentials';
@@ -207,6 +308,7 @@ class process
 
 
 		if (isset($this->errorstate)) {
+
 			switch ($this->errorstate) {
 				case 'invalid_request_method':
 					$this->login_err_message = __("The request method used in this request is not valid.", 'cftp_admin');
@@ -235,9 +337,18 @@ class process
 				case 'access_denied':
 					$this->login_err_message = __('You must approve the requested permissions to sign in with Google.', 'cftp_admin');
 					break;
-				case 'max_login_attempts_reachead':
-					$this->login_err_message = __('You have tried logging in too many times. Please try again after'. intval($this->tryAfter/60).' minutes', 'cftp_admin');
+				case 'max_login_attempts_reached':
+					$unit_ = 'minutes';
+					$after_ = round($this->tryAfter / 60, 2);
+					if ($after_ >= 60) {
+						$after_ = round($after_ / 60, 2);
+						$unit_ = 'hours';
+					}
+					$this->login_err_message = __('You have tried to login more times than allowed within ' . round($this->attempts_interval / 60) . ' minutes. Please try again after ' . $after_ . ' ' . $unit_, 'cftp_admin');
 					break;
+				case 'password_expired':
+					$this->login_err_message = __('This password has exceeded the maximum lifetime allowed for your account type and must therefore be changed before you can login <br/><hr/> <a style="text-align:center;display:block" href="./reset-password.php?must_change_0=1&mail='.$this->logged_mail.'">Change password now</a>');
+				break;
 			}
 		}
 

@@ -143,6 +143,12 @@ if (!empty($options_values)) {
 	if(isset($options_values['max_login_lockout_duration'])){
 		define('MAX_LOGIN_LOCKOUT_DURATION', $options_values['max_login_lockout_duration']);
 	}
+	if(isset($options_values['system_password_expires_after'])){
+		define('SYS_PASSWORD_EXPIRE_AFTER', $options_values['system_password_expires_after']);
+	}
+	if(isset($options_values['client_password_expires_after'])){
+		define('CLIENT_PASSWORD_EXPIRE_AFTER', $options_values['client_password_expires_after']);
+	}
 
 	/**
 	 * For versions 426 and up

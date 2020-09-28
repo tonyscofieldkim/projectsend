@@ -58,3 +58,5 @@ $validation_req_lower	= __('contain at least 1 lowercase character from European
 $validation_req_number	= __('contain at least 1 base-10 number (0-9)','cftp_admin');
 $validation_req_special	= __('contain at least 1 special character or a diacritic mark','cftp_admin');
 $validation_password_has_pi_data = __('Password cannot contain your username, email or names');
+$validation_password_is_recent = __('Password cannot be one of the last 10 used in this account');
+$validation_password_is_expired = __('This password has exceeded the maximum lifetime allowed for your account type and must therefore be changed before you can login');

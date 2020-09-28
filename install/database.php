@@ -355,6 +355,8 @@ if (defined('TRY_INSTALL')) {
 								('max_login_attempts', '6'),
 								('max_login_interval', '900'),
 								('max_login_lockout_duration', '1800'),
+								('system_password_expires_after', '2592000'),
+								('client_password_expires_after', '7776000'),
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
@@ -415,6 +417,7 @@ if (defined('TRY_INSTALL')) {
 				`id` int NOT NULL AUTO_INCREMENT,
 				`uid` int NOT NULL,
 				`time_when` int NOT NULL,
+				`is_lock_point` tinyint NOT NULL DEFAULT 0,
 				PRIMARY KEY (`id`),
 				KEY `uid_fk` (`id`,`uid`),
 				KEY `uid` (`uid`),
@@ -427,7 +430,6 @@ if (defined('TRY_INSTALL')) {
 			'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_HISTORY.'` (
 				`id` int NOT NULL AUTO_INCREMENT,
 				`uid` int NOT NULL,
-				`password_number` int NOT NULL,
 				`creation_time` int NOT NULL,
 				`hash_val` text NOT NULL,
 				PRIMARY KEY (`id`),
