@@ -229,6 +229,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'label'	=> __('Social Login', 'cftp_admin'),
 													'link'	=> 'options.php?section=social_login',
 												),
+												array(
+													'label'	=> __('SAML 2.0 SSO', 'cftp_admin'),
+													'link'	=> 'options.php?section=saml2_sso',
+												),
 											),
 							);
 
