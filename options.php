@@ -12,7 +12,7 @@
  * Allow no framing for this page as it has login credentials [FIXED] ✔️
  */
 
- /**
+/**
  * =============== CROSS-FRAME SCRIPTING SECURITY ============
  * Add CSP Headers before rendering
  * Add the Backward compatible X-Frame Options too.
@@ -96,6 +96,10 @@ switch ($section) {
 		$section_title	= __('Social Login', 'cftp_admin');
 		$checkboxes		= array();
 		break;
+	case 'saml2_sso':
+		$section_title	= __('SAML 2.0 SSO', 'cftp_admin');
+		$checkboxes		= array();
+		break;
 	default:
 		$location = BASE_URI . 'options.php?section=general';
 		header("Location: $location");
@@ -130,6 +134,16 @@ if ($_POST) {
 	if (empty($_POST['google_signin_enabled'])) {
 		$allowed_empty_values[] = 'google_client_id';
 		$allowed_empty_values[] = 'google_client_secret';
+	}
+	if (empty($_POST['saml2_sso_only'])) {
+		$allowed_empty_values[] = 'saml2_service_name';
+		$allowed_empty_values[] = 'saml2_service_description';
+		$allowed_empty_values[] = 'saml2_idp_entity_id';
+		$allowed_empty_values[] = 'saml2_sso_url';
+		$allowed_empty_values[] = 'saml2_slo_url';
+		$allowed_empty_values[] = 'saml2_idp_x509';
+
+		
 	}
 	if (empty($_POST['recaptcha_enabled'])) {
 		$allowed_empty_values[] = 'recaptcha_site_key';
@@ -270,12 +284,12 @@ $allowed_file_types = implode(',', $allowed_file_types);
 		<div class="white-box-interior">
 
 			<script type="text/javascript">
-			/** Check if this page is framed, if it is, change location */
-			(function(window) {
+				/** Check if this page is framed, if it is, change location */
+				(function(window) {
 					if (window.location !== window.top.location)
 						window.top.location = window.location;
 				})(this);
-				
+
 				$(document).ready(function() {
 					$('#notifications_max_tries').spinedit({
 						minimum: 1,
@@ -413,7 +427,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="clients_can_register">
-									<input  disabled title="Cannot Mutate Value" type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER > 20) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
+									<input disabled title="Cannot Mutate Value" type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (CLIENTS_CAN_REGISTER > 20) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves', 'cftp_admin'); ?>
 								</label>
 							</div>
 						</div>
@@ -440,10 +454,10 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									foreach ($groups as $group) {
 									?>
 										<option value="<?php echo filter_var($group["id"], FILTER_VALIDATE_INT); ?>" <?php
-																													if (CLIENTS_AUTO_GROUP == $group["id"]) {
-																														echo 'selected="selected"';
-																													}
-																													?>><?php echo html_output($group["name"]); ?>
+																														if (CLIENTS_AUTO_GROUP == $group["id"]) {
+																															echo 'selected="selected"';
+																														}
+																														?>><?php echo html_output($group["name"]); ?>
 										</option>
 									<?php
 									}
@@ -766,7 +780,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_upper">
-									<input  title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
+									<input title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQ_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_upper; ?>
 								</label>
 							</div>
 						</div>
@@ -774,7 +788,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_lower">
-									<input title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
+									<input title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQ_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_lower; ?>
 								</label>
 							</div>
 						</div>
@@ -782,7 +796,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_number">
-									<input  title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
+									<input title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQ_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_number; ?>
 								</label>
 							</div>
 						</div>
@@ -790,79 +804,79 @@ $allowed_file_types = implode(',', $allowed_file_types);
 						<div class="form-group">
 							<div class="col-sm-8 col-sm-offset-4">
 								<label for="pass_require_special">
-									<input title="Turn on (recommended)"  type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
+									<input title="Turn on (recommended)" type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQ_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $validation_req_special; ?>
 								</label>
 							</div>
 						</div>
 						<div class="options_divide"></div>
-						<h3><?php _e('Passwords expiry', 'cftp_admin')?></h3>
+						<h3><?php _e('Passwords expiry', 'cftp_admin') ?></h3>
 						<p> <?php _e('Control password lifetime for the different account types') ?> </p>
 						<div class="form-group">
-								<label for="system_password_expires_after" class="col-sm-4 control-label"><?php _e('SystemUser password expires after:', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<select name="system_password_expires_after" id="system_password_expires_after" class="form-control">
-										<option value="0" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
-										<option value="300" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
-										<option value="1296000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
-										<option value="2592000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
-										<option value="5184000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
-										<option value="7776000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
-										
-									</select>
-								</div>
+							<label for="system_password_expires_after" class="col-sm-4 control-label"><?php _e('SystemUser password expires after:', 'cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<select name="system_password_expires_after" id="system_password_expires_after" class="form-control">
+									<option value="0" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
+									<option value="300" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
+									<option value="1296000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
+									<option value="2592000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
+									<option value="5184000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
+									<option value="7776000" <?php echo (SYS_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
+
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="client_password_expires_after" class="col-sm-4 control-label"><?php _e('Client Account password expires after:', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<select name="client_password_expires_after" id="client_password_expires_after" class="form-control">
-										<option value="0" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
-										<option value="300" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
-										<option value="1296000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
-										<option value="2592000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
-										<option value="5184000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
-										<option value="7776000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
-										
-									</select>
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="client_password_expires_after" class="col-sm-4 control-label"><?php _e('Client Account password expires after:', 'cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<select name="client_password_expires_after" id="client_password_expires_after" class="form-control">
+									<option value="0" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '0') ? 'selected="selected"' : ''; ?>><?php _e('No expiry', 'cftp_admin'); ?></option>
+									<option value="300" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '300') ? 'selected="selected"' : ''; ?>><?php _e('5 minutes (test only)', 'cftp_admin'); ?></option>
+									<option value="1296000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '1296000') ? 'selected="selected"' : ''; ?>><?php _e('15 Days', 'cftp_admin'); ?></option>
+									<option value="2592000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '2592000') ? 'selected="selected"' : ''; ?>><?php _e('30 Days', 'cftp_admin'); ?></option>
+									<option value="5184000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '5184000') ? 'selected="selected"' : ''; ?>><?php _e('60 Days', 'cftp_admin'); ?></option>
+									<option value="7776000" <?php echo (CLIENT_PASSWORD_EXPIRE_AFTER == '7776000') ? 'selected="selected"' : ''; ?>><?php _e('90 Days', 'cftp_admin'); ?></option>
+
+								</select>
 							</div>
+						</div>
 						<div class="options_divide"></div>
-						<h3><?php _e('Login Attempts', 'cftp_admin')?></h3>
+						<h3><?php _e('Login Attempts', 'cftp_admin') ?></h3>
 						<p> <?php _e('Control login attempts in order to secure accounts') ?> </p>
 						<div class="form-group">
-								<label for="max_login_attempts" class="col-sm-4 control-label"><?php _e('Maximum number of attempts', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<select name="max_login_attempts" id="max_login_attempts" class="form-control">
-										<option value="3" <?php echo (MAX_LOGIN_ATTEMPTS == '3') ? 'selected="selected"' : ''; ?>><?php _e('3 times', 'cftp_admin'); ?></option>
-										<option value="6" <?php echo (MAX_LOGIN_ATTEMPTS == '6') ? 'selected="selected"' : ''; ?>><?php _e('6 times', 'cftp_admin'); ?></option>
-										<option value="10" <?php echo (MAX_LOGIN_ATTEMPTS == '10') ? 'selected="selected"' : ''; ?>><?php _e('10 times', 'cftp_admin'); ?></option>
-									</select>
-								</div>
+							<label for="max_login_attempts" class="col-sm-4 control-label"><?php _e('Maximum number of attempts', 'cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<select name="max_login_attempts" id="max_login_attempts" class="form-control">
+									<option value="3" <?php echo (MAX_LOGIN_ATTEMPTS == '3') ? 'selected="selected"' : ''; ?>><?php _e('3 times', 'cftp_admin'); ?></option>
+									<option value="6" <?php echo (MAX_LOGIN_ATTEMPTS == '6') ? 'selected="selected"' : ''; ?>><?php _e('6 times', 'cftp_admin'); ?></option>
+									<option value="10" <?php echo (MAX_LOGIN_ATTEMPTS == '10') ? 'selected="selected"' : ''; ?>><?php _e('10 times', 'cftp_admin'); ?></option>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="max_login_interval" class="col-sm-4 control-label"><?php _e('Lock Interval', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<select name="max_login_interval" id="max_login_interval" class="form-control">
-										<option value="600" <?php echo (MAX_LOGIN_INTERVAL == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
-										<option value="900" <?php echo (MAX_LOGIN_INTERVAL == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
-									</select>
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="max_login_interval" class="col-sm-4 control-label"><?php _e('Lock Interval', 'cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<select name="max_login_interval" id="max_login_interval" class="form-control">
+									<option value="600" <?php echo (MAX_LOGIN_INTERVAL == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
+									<option value="900" <?php echo (MAX_LOGIN_INTERVAL == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="max_login_lockout_duration" class="col-sm-4 control-label"><?php _e('Lockout For Duration of:', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<select name="max_login_lockout_duration" id="max_login_lockout_duration" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="max_login_lockout_duration" class="col-sm-4 control-label"><?php _e('Lockout For Duration of:', 'cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<select name="max_login_lockout_duration" id="max_login_lockout_duration" class="form-control">
 									<option value="120" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '120') ? 'selected="selected"' : ''; ?>><?php _e('2 minutes (for testing only)', 'cftp_admin'); ?></option>
-										<option value="600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
-										<option value="900" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
-										<option value="1800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '1800') ? 'selected="selected"' : ''; ?>><?php _e('30 minutes', 'cftp_admin'); ?></option>
-										<option value="2700" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '2700') ? 'selected="selected"' : ''; ?>><?php _e('45 minutes', 'cftp_admin'); ?></option>
-										<option value="3600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '3600') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour', 'cftp_admin'); ?></option>
-										<option value="5400" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '5400') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour 30 minutes', 'cftp_admin'); ?></option>
-										<option value="7200" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '7200') ? 'selected="selected"' : ''; ?>><?php _e('2 Hours', 'cftp_admin'); ?></option>
-										<option value="10800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '10800') ? 'selected="selected"' : ''; ?>><?php _e('3 Hours', 'cftp_admin'); ?></option>
-									</select>
-								</div>
+									<option value="600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '600') ? 'selected="selected"' : ''; ?>><?php _e('10 minutes', 'cftp_admin'); ?></option>
+									<option value="900" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '900') ? 'selected="selected"' : ''; ?>><?php _e('15 minutes', 'cftp_admin'); ?></option>
+									<option value="1800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '1800') ? 'selected="selected"' : ''; ?>><?php _e('30 minutes', 'cftp_admin'); ?></option>
+									<option value="2700" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '2700') ? 'selected="selected"' : ''; ?>><?php _e('45 minutes', 'cftp_admin'); ?></option>
+									<option value="3600" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '3600') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour', 'cftp_admin'); ?></option>
+									<option value="5400" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '5400') ? 'selected="selected"' : ''; ?>><?php _e('1 Hour 30 minutes', 'cftp_admin'); ?></option>
+									<option value="7200" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '7200') ? 'selected="selected"' : ''; ?>><?php _e('2 Hours', 'cftp_admin'); ?></option>
+									<option value="10800" <?php echo (MAX_LOGIN_LOCKOUT_DURATION == '10800') ? 'selected="selected"' : ''; ?>><?php _e('3 Hours', 'cftp_admin'); ?></option>
+								</select>
 							</div>
+						</div>
 						<div class="options_divide"></div>
 						<h3><?php _e('reCAPTCHA', 'cftp_admin'); ?></h3>
 						<p><?php _e('Helps prevent SPAM on your registration form.', 'cftp_admin'); ?></p>
@@ -1026,7 +1040,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 							</div>
 							<div class="form-group">
 								<div class="col-sm-8 col-sm-offset-4">
-									<a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?', 'cftp_admin'); ?></a>
+									<a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain these credentials?', 'cftp_admin'); ?></a>
 								</div>
 							</div>
 							<div class="form-group">
@@ -1037,6 +1051,83 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<span class="format_url"><?php echo BASE_URI . 'sociallogin/google/callback.php'; ?></span>
 								</div>
 							</div>
+						</div>
+				<?php
+						break;
+				?>
+
+				<div class="options_divide"></div>
+				<?php
+					case 'saml2_sso':
+					?>
+						<h3><?php _e('PingFederate SSO (SAML 2.0)', 'cftp_admin'); ?></h3>
+
+						<div class="options_column">
+							<div class="form-group">
+								<label for="saml2_sso_only" class="col-sm-4 control-label"><?php _e('Enable this method (disables passwords)', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<select name="saml2_sso_only" id="saml2_sso_only" class="form-control">
+										<option value="1" <?php echo (SAML2_SSO_ENABLED == '1') ? 'selected="selected"' : ''; ?>><?php _e('Yes', 'cftp_admin'); ?></option>
+										<option value="0" <?php echo (SAML2_SSO_ENABLED == '0') ? 'selected="selected"' : ''; ?>><?php _e('No', 'cftp_admin'); ?></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_service_name" class="col-sm-4 control-label"><?php _e('This SP Service Name', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_service_name" id="saml2_service_name" class="form-control empty" value="<?php echo html_output(SAML2_SERVICE_NAME); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_service_description" class="col-sm-4 control-label"><?php _e('This SP Service Description', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_service_description" id="saml2_service_description" class="form-control empty" value="<?php echo html_output(SAML2_SERVICE_DESCRIPTION); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_sso_url" class="col-sm-4 control-label"><?php _e('SSO URL for IDP initiated Sign On', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_sso_url" id="saml2_sso_url" class="form-control empty" value="<?php echo html_output(SAML2_IDP_SSO_URL); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4">
+									<?php _e('SP SSO Response URL', 'cftp_admin'); ?>
+								</div>
+								<div class="col-sm-8">
+									<span class="format_url"><?php echo BASE_URI . 'sso/pingfederate/sso2.php'; ?></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_slo_url" class="col-sm-4 control-label"><?php _e('SLO Request URL for SP initiated Logout', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_slo_url" id="saml2_slo_url" class="form-control empty" value="<?php echo html_output(SAML2_IDP_SLO_URL); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4">
+									<?php _e('SP SLO Response URL', 'cftp_admin'); ?>
+								</div>
+								<div class="col-sm-8">
+									<span class="format_url"><?php echo BASE_URI . 'sso/pingfederate/slo2.php'; ?></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_idp_x509" class="col-sm-4 control-label"><?php _e('IDP X509 Cert', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<textarea name="saml2_idp_x509" id="saml2_idp_x509" class="form-control empty"><?php 
+									if(empty(trim(SAML2_IDP_X509))){
+
+										echo '';
+									}
+									else{
+										echo html_output(trim(SAML2_IDP_X509));
+									}
+									 
+									?></textarea>
+								</div>
+							</div>
+							
 						</div>
 				<?php
 						break;
