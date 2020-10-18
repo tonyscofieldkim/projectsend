@@ -18,7 +18,55 @@ $header = 'header.php';
  * ----------------------------------------------------------------------------------------
  * 2. Fix session fixation issue by refreshing the session ID  [FIXED] ✔️
  */
+
+/**
+ * Check SAML SSO
+ * If GET['do'] = saml2_sso_flow, send browser to the signon service
+ */
+if(isset($_GET['do']) && $_GET['do'] == 'saml2_sso_flow'){
+	if(SAML2_SSO_ENABLED == 1){
+		if(isset($_SESSION['loggedin'])){
+			
+			header('Location: home.php');
+		}
+		else{
+			header('Location: '. SAML2_IDP_SSO_URL);
+			exit;
+		}
+	}
+}
+
+/**
+ * Check SAML SLO
+ * if logout and SSO enabled, redirect to SAML logout endpoint.
+ */
+if(isset($_GET['do']) && $_GET['do'] == 'logout'){
+	if(SAML2_SSO_ENABLED == 1){
+		header("Cache-control: private");
+		unset($_SESSION['loggedin']);
+		unset($_SESSION['access']);
+		unset($_SESSION['userlevel']);
+		unset($_SESSION['lang']);
+		unset($_SESSION['last_call']);
+		session_destroy();
+
+		/** If there is a cookie, unset it */
+		setcookie("loggedin", "", time() - COOKIE_EXP_TIME);
+		setcookie("password", "", time() - COOKIE_EXP_TIME);
+		setcookie("access", "", time() - COOKIE_EXP_TIME);
+		setcookie("userlevel", "", time() - COOKIE_EXP_TIME);
+		
+		/**redirect to SLO */
+		
+		exit;
+	}
+}
+
 if (!empty($_GET['do']) && $_GET['do'] == 'login') {
+	if(SAML2_SSO_ENABLED == 1){
+		header('Location: process.php?do=saml2_sso_flow');
+		exit;
+	}
 } else {
 	require_once($header);
 }

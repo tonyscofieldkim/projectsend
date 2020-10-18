@@ -48,7 +48,14 @@ $body_class = array('login');
 include('header-unlogged.php');
 
 $login_button_text = __('Log in', 'cftp_admin');
+/**
+ * Check if SSO with SAML is enabled. If so, select an SSO IDP Initiated Flow
+ */
 
+ if( SAML2_SSO_ENABLED){
+	 header('Location: process.php?do=saml2_sso_flow');
+	 exit;
+ }
 /**
  * Google Sign-in
  */
