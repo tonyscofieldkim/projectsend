@@ -224,6 +224,20 @@ if (!empty($options_values)) {
 		define('GOOGLE_CLIENT_SECRET', $options_values['google_client_secret']);
 		define('GOOGLE_SIGNIN_ENABLED', $options_values['google_signin_enabled']);
 	}
+	/**
+	 * 
+	 * For SSO SAML 2.0  Login
+	 */
+	if (isset($options_values['saml2_sso_only'])) {
+		define('SAML2_SSO_ENABLED', $options_values['saml2_sso_only']);
+		define('SAML2_SERVICE_NAME', $options_values['saml2_service_name']);
+		define('SAML2_SERVICE_DESCRIPTION', $options_values['saml2_service_description']);
+		
+		define('SAML2_IDP_ENTITY_ID', $options_values['saml2_idp_entity_id']);
+		define('SAML2_IDP_SSO_URL', $options_values['saml2_sso_url']);
+		define('SAML2_IDP_SLO_URL', $options_values['saml2_slo_url']);
+		define('SAML2_IDP_X509', $options_values['saml2_idp_x509']);
+	}
 
 	/**
 	 * For versions 737 and up

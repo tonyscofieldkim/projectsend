@@ -357,6 +357,13 @@ if (defined('TRY_INSTALL')) {
 								('max_login_lockout_duration', '1800'),
 								('system_password_expires_after', '2592000'),
 								('client_password_expires_after', '7776000'),
+								('saml2_sso_only', '0'),
+								('saml2_service_name', 'Files Server'),
+								('saml2_service_description', 'File Sharing, Client Oriented Service'),
+								('saml2_idp_entity_id', ''),
+								('saml2_sso_url', ''),
+								('saml2_slo_url', ''),
+								('saml2_idp_x509', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
