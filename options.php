@@ -1095,7 +1095,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<?php _e('SP SSO Response URL', 'cftp_admin'); ?>
 								</div>
 								<div class="col-sm-8">
-									<span class="format_url"><?php echo BASE_URI . 'sso/pingfederate/sso2.php'; ?></span>
+									<span class="format_url"><?php echo BASE_URI . 'sso/pingfed/sso2.php'; ?></span>
 								</div>
 							</div>
 							<div class="form-group">
@@ -1109,7 +1109,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<?php _e('SP SLO Response URL', 'cftp_admin'); ?>
 								</div>
 								<div class="col-sm-8">
-									<span class="format_url"><?php echo BASE_URI . 'sso/pingfederate/slo2.php'; ?></span>
+									<span class="format_url"><?php echo BASE_URI . 'sso/pingfed/slo2.php'; ?></span>
 								</div>
 							</div>
 							<div class="form-group">

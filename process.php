@@ -56,7 +56,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 		setcookie("access", "", time() - COOKIE_EXP_TIME);
 		setcookie("userlevel", "", time() - COOKIE_EXP_TIME);
 		
-		/**redirect to SLO */
+		/**redirect to SLO on IDP*/
+		header('Location: '. SAML2_IDP_SLO_URL);
 		
 		exit;
 	}
