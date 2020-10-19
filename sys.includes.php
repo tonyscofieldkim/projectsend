@@ -91,3 +91,4 @@ require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';
 require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Model.php';
 require_once ROOT_DIR . '/includes/Google/Oauth2/contrib/Google_Oauth2Service.php';
 require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';
+require_once ROOT_DIR . '/includes/phpsaml/_toolkit_loader.php';
