@@ -363,7 +363,12 @@ if (defined('TRY_INSTALL')) {
 								('saml2_idp_entity_id', ''),
 								('saml2_sso_url', ''),
 								('saml2_slo_url', ''),
-								('saml2_idp_x509', '')
+								('saml2_sp_x509', ''),
+								('saml2_sp_privkey', ''),
+								('saml2_idp_x509', ''),
+								('saml2_assert_attr_email', ''),
+								('saml2_assert_attr_givennames', ''),
+								('saml2_assert_attr_role', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
