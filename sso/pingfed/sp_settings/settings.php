@@ -1,5 +1,5 @@
 <?php
-require_once('../../../sys.includes.php');
+
 $advancedSettings = array (
     // If 'strict' is True, then the PHP Toolkit will reject unsigned
     // or unencrypted messages if it expects them signed or encrypted
@@ -8,7 +8,7 @@ $advancedSettings = array (
     'strict' => true,
 
     // Enable debug mode (to print errors) //revert to false for prod
-    'debug' => true,
+    'debug' => false,
 
     // Set a BaseURL to be used instead of try to guess
     // the BaseURL of the view that process the SAML Message.
