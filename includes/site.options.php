@@ -237,6 +237,12 @@ if (!empty($options_values)) {
 		define('SAML2_IDP_SSO_URL', $options_values['saml2_sso_url']);
 		define('SAML2_IDP_SLO_URL', $options_values['saml2_slo_url']);
 		define('SAML2_IDP_X509', $options_values['saml2_idp_x509']);
+		define('SAML2_SP_X509', $options_values['saml2_sp_x509']);
+		define('SAML2_SP_PRIVKEY', $options_values['saml2_sp_privkey']);
+		define('SAML2_ATTR_EMAIL', $options_values['saml2_assert_attr_email']);
+		define('SAML2_ATTR_GIVENNAMES', $options_values['saml2_assert_attr_givennames']);
+		define('SAML2_ATTR_ROLE', $options_values['saml2_assert_attr_role']);
+
 	}
 
 	/**
