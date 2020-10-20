@@ -141,7 +141,12 @@ if ($_POST) {
 		$allowed_empty_values[] = 'saml2_idp_entity_id';
 		$allowed_empty_values[] = 'saml2_sso_url';
 		$allowed_empty_values[] = 'saml2_slo_url';
+		$allowed_empty_values[] = 'saml2_sp_x509';
+		$allowed_empty_values[] = 'saml2_sp_privkey';
 		$allowed_empty_values[] = 'saml2_idp_x509';
+		$allowed_empty_values[] = 'saml2_assert_attr_email';
+		$allowed_empty_values[] = 'saml2_assert_attr_givennames';
+		$allowed_empty_values[] = 'saml2_assert_attr_role';
 
 		
 	}
@@ -1084,6 +1089,64 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<input type="text" name="saml2_service_description" id="saml2_service_description" class="form-control empty" value="<?php echo html_output(SAML2_SERVICE_DESCRIPTION); ?>" />
 								</div>
 							</div>
+							<div class="form-group">
+								<label for="saml2_sp_x509" class="col-sm-4 control-label"><?php _e('This SP Service X509 Cert (as copied)', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+								<textarea name="saml2_sp_x509" id="saml2_sp_x509" class="form-control empty"><?php 
+									if(empty(trim(SAML2_SP_X509))){
+
+										echo '';
+									}
+									else{
+										echo html_output(trim(SAML2_SP_X509));
+									}
+									 
+									?></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_sp_privkey" class="col-sm-4 control-label"><?php _e('This SP Service Private Key (as copied)', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+								<textarea name="saml2_sp_privkey" id="saml2_sp_privkey" class="form-control empty"><?php 
+									if(empty(trim(SAML2_SP_PRIVKEY))){
+
+										echo '';
+									}
+									else{
+										echo html_output(trim(SAML2_SP_PRIVKEY));
+									}
+									 
+									?></textarea>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="saml2_assert_attr_email" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for Email (in IDP Auth Response).', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_assert_attr_email" id="saml2_assert_attr_email" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_EMAIL); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_assert_attr_givennames" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for Given Names/ Preferred Names (in IDP Auth Response).', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_assert_attr_givennames" id="saml2_assert_attr_givennames" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_GIVENNAMES); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_assert_attr_role" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for User Role (In IDP  Auth Response)', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_assert_attr_role" id="saml2_assert_attr_role" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_ROLE); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4">
+									<?php _e('SP Metadata URL', 'cftp_admin'); ?>
+								</div>
+								<div class="col-sm-8">
+									<span class="format_url"><?php echo BASE_URI . 'sso/pingfed/sso_sp_metadata.php'; ?></span>
+								</div>
+							</div>
+							<div class="options_divide"><hr/></div>
 							<div class="form-group">
 								<label for="saml2_sso_url" class="col-sm-4 control-label"><?php _e('SSO URL for IDP initiated Sign On', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
