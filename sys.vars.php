@@ -205,7 +205,7 @@ define('COOKIE_EXP_TIME', 60 * 60 * 24 * 30);
  * Case uses must be analyzed before enabling this function
  */
 define('SESSION_TIMEOUT_EXPIRE', true);
-$session_expire_time = 2 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds (changed to 2hr)
+$session_expire_time = 1 * 24 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds (changed to 24hr)
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /**
