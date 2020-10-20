@@ -43,6 +43,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'saml2_sso_flow'){
 if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 	if(SAML2_SSO_ENABLED == 1){
 		header("Cache-control: private");
+		$loggedin_ = $_SESSION['loggedin'];
+
 		unset($_SESSION['loggedin']);
 		unset($_SESSION['access']);
 		unset($_SESSION['userlevel']);
@@ -56,8 +58,18 @@ if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 		setcookie("access", "", time() - COOKIE_EXP_TIME);
 		setcookie("userlevel", "", time() - COOKIE_EXP_TIME);
 		
-		/**redirect to SLO on IDP*/
-		header('Location: '. SAML2_IDP_SLO_URL);
+		/** Record the action log */
+		$new_log_action = new LogActions();
+		$log_action_args = array(
+			'action'	=> 31,
+			'owner_id'	=> CURRENT_USER_ID,
+			'affected_account_name' => $loggedin_
+		);
+		$new_record_action = $new_log_action->log_action_save($log_action_args);
+		
+		/**redirect to SLO  Endpoint*/
+		$location_ = BASE_URI. 'sso/pingfed/slo2.php';
+		header("Location: $location_");
 		
 		exit;
 	}
