@@ -241,7 +241,6 @@ if (!empty($options_values)) {
 		define('SAML2_SP_PRIVKEY', $options_values['saml2_sp_privkey']);
 		define('SAML2_ATTR_EMAIL', $options_values['saml2_assert_attr_email']);
 		define('SAML2_ATTR_GIVENNAMES', $options_values['saml2_assert_attr_givennames']);
-		define('SAML2_ATTR_ROLE', $options_values['saml2_assert_attr_role']);
 
 	}
 

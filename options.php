@@ -146,7 +146,7 @@ if ($_POST) {
 		$allowed_empty_values[] = 'saml2_idp_x509';
 		$allowed_empty_values[] = 'saml2_assert_attr_email';
 		$allowed_empty_values[] = 'saml2_assert_attr_givennames';
-		$allowed_empty_values[] = 'saml2_assert_attr_role';
+
 
 		
 	}
@@ -1132,12 +1132,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<input type="text" name="saml2_assert_attr_givennames" id="saml2_assert_attr_givennames" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_GIVENNAMES); ?>" />
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="saml2_assert_attr_role" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for User Role (In IDP  Auth Response)', 'cftp_admin'); ?></label>
-								<div class="col-sm-8">
-									<input type="text" name="saml2_assert_attr_role" id="saml2_assert_attr_role" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_ROLE); ?>" />
-								</div>
-							</div>
+							
 							<div class="form-group">
 								<div class="col-sm-4">
 									<?php _e('SP Metadata URL', 'cftp_admin'); ?>
