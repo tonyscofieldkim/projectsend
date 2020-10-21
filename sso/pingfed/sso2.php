@@ -6,9 +6,10 @@
 
 require_once('../../sys.includes.php');
 require_once('sp_settings/settings.php');
+require_once('./include.view.php');
 
 if (!defined('SAML2_SSO_ENABLED') || SAML2_SSO_ENABLED != '1') {
-    echo '<p>SSO Method is off</p>';
+    echo createView('SSO Not Enabled', 'SSO Login Method is disabled at the moment.');
     exit();
 }
 
@@ -37,12 +38,12 @@ $auth->processResponse($requestID);
 $errors = $auth->getErrors();
 
 if (!empty($errors)) {
-    echo '<p>Errors occured at SSO response.</p>';
+    echo createView('SSO Login not completed', 'An error occurred in the request.');
     //echo '<p>', implode(', ', $errors), '</p>'; //not good to print these errors to user
 }
 
 if (!$auth->isAuthenticated()) {
-    echo "<p>Sorry, you were not authenticated.</p>";
+    echo createView('Not Authenticated', 'You are not authenticated.');
     exit();
 }
 
@@ -59,27 +60,25 @@ unset($_SESSION['AuthNRequestID']);
 //check for attributes
 $attributesNames = array(
     SAML2_ATTR_EMAIL,
-    SAML2_ATTR_ROLE,
     SAML2_ATTR_GIVENNAMES
 );
 $attributeEmail = false;
-$attributeRole = false;
+$attributeRole = 0; //assume level 0 (client user)
 $attributeGivenNames = false;
 foreach ($attributes as $attributeName => $attributeValue) {
     if ($attributeName == $attributesNames[0]) $attributeEmail = $attributeValue;
-    if ($attributeName == $attributesNames[1]) $attributeRole = $attributeValue;
-    if ($attributeName == $attributesNames[2]) $attributeGivenNames = $attributeValue;
+    if ($attributeName == $attributesNames[1]) $attributeGivenNames = $attributeValue;
 }
 
-if (empty($attributeEmail) || empty($attributeRole) || empty($attributeGivenNames)) {
+if (empty($attributeEmail) || empty($attributeGivenNames)) {
     //incorrect assertions.
-    echo "<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>";
+    echo createView("Authentication Assertion Error","<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>");
     exit;
 }
 
 
 //check if this user exists or not.
-$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE (user= :username OR email= :email) AND level = :level");
+$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 if (array_key_exists(intval($attributeRole), $allowed_levels)) {
     $attributeRole = intval($attributeRole);
 } else {
@@ -124,7 +123,7 @@ if ($count_user > 0) {
             );
             $new_record_action = $new_log_action->log_action_save($log_action_args);
         } else {
-            echo "<p>Your account is deactivated</p>";
+            echo createView('Your account is deactivated', 'Your account is not active. Contact system admin.');
             exit;
         }
     } else {
@@ -136,7 +135,7 @@ if ($count_user > 0) {
                 ':name' => $attributeGivenNames
             ));
             if ($statement->rowCount() < 1) {
-                echo "<p>Your account could not be connected. Error code DBERR_QUERYFAIL</p>";
+                echo createView("Account not connected", "<p>Your account could not be connected. Error code DBERR_QUERYFAIL</p>");
                 exit;
             }
 
@@ -165,7 +164,7 @@ if ($count_user > 0) {
                 );
                 $new_record_action = $new_log_action->log_action_save($log_action_args);
             } else {
-                echo "<p>Your account is deactivated</p>";
+                echo createView('Your account is deactivated', 'Your account is not active. Contact system admin.');
                 exit;
             }
         }
@@ -181,11 +180,11 @@ if ($count_user > 0) {
     if ($count_user > 0) {
         if ($count_user_x['counted'] > 0) {
             //user exists.
-            echo "<p>Could create account. This email is already taken. ($attributeEmail)</p>";
+            echo createView("Account setup error", "<p>Could create account. This email is already taken. ($attributeEmail)</p>");
             exit;
         }
     } else {
-        echo "<p>Could not log in. Internal error code is: DBERR_QUERYFAIL</p>";
+        echo createView("SSO Login Error", "<p>Could not log in. Internal error code is: DBERR_QUERYFAIL</p>");
         exit;
     }
     //proceed with registration
@@ -211,7 +210,7 @@ if ($count_user > 0) {
     if ($new_validate == 1) {
         $new_response = $new_user->create_user($new_arguments);
     } else {
-        echo "Could not create your account. One or more parameters are invalid";
+        echo createView("Account not created", "Could not create your account. One or more parameters are invalid");
         exit;
     }
     $access_string = 'admin';

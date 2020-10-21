@@ -1,10 +1,8 @@
 <?php
-
 /**
  * SLO Request Endpoint.
  * Sends a logout request to IDP
  */
-
 
 if(isset($_GET['finish'])){
     $location_ =  BASE_URI.'index.php';
@@ -13,9 +11,10 @@ if(isset($_GET['finish'])){
 
 require_once('../../sys.includes.php');
 require_once('sp_settings/settings.php');
+require_once('./include.view.php');
 
 if(!defined('SAML2_SSO_ENABLED') || SAML2_SSO_ENABLED != '1'){
-    echo '<p>SSO Method is off</p>';
+    echo createView('SSO Not Enabled', 'SSO Login Method is disabled at the moment.');
     exit();
 }
 $samlSettings = new OneLogin_Saml2_Settings($advancedSettings);
@@ -41,5 +40,5 @@ try {
 
     header("Location: $url");
 } catch (Exception $e) {
-    echo '<p>Error with request. Could not send Logout request to IDP</p>';
+    echo createView('SSO Logout not finished', '<p>Error with request. Could not send Logout request to IDP</p>');
 }
