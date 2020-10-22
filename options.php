@@ -1163,7 +1163,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 							</div>
 							<div class="form-group">
 								<div class="col-sm-4">
-									<?php _e('SP SSO Response URL', 'cftp_admin'); ?>
+									<?php _e('SP SSO ACS Endpoint URL', 'cftp_admin'); ?>
 								</div>
 								<div class="col-sm-8">
 									<span class="format_url"><?php echo BASE_URI . 'sso/pingfed/sso2.php'; ?></span>
