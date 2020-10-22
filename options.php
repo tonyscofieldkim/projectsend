@@ -145,10 +145,9 @@ if ($_POST) {
 		$allowed_empty_values[] = 'saml2_sp_privkey';
 		$allowed_empty_values[] = 'saml2_idp_x509';
 		$allowed_empty_values[] = 'saml2_assert_attr_email';
-		$allowed_empty_values[] = 'saml2_assert_attr_givennames';
+		$allowed_empty_values[] = 'saml2_assert_attr_firstname';
+		$allowed_empty_values[] = 'saml2_assert_attr_lastname';
 
-
-		
 	}
 	if (empty($_POST['recaptcha_enabled'])) {
 		$allowed_empty_values[] = 'recaptcha_site_key';
@@ -1084,6 +1083,14 @@ $allowed_file_types = implode(',', $allowed_file_types);
 								</div>
 							</div>
 							<div class="form-group">
+								<div class="col-sm-4">
+									<?php _e('SP EntityId', 'cftp_admin'); ?>
+								</div>
+								<div class="col-sm-8">
+									<span class="format_url"><?php echo 'sso/pingfed/sso_sp_metadata.php'; ?></span>
+								</div>
+							</div>
+							<div class="form-group">
 								<label for="saml2_service_description" class="col-sm-4 control-label"><?php _e('This SP Service Description', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
 									<input type="text" name="saml2_service_description" id="saml2_service_description" class="form-control empty" value="<?php echo html_output(SAML2_SERVICE_DESCRIPTION); ?>" />
@@ -1127,9 +1134,15 @@ $allowed_file_types = implode(',', $allowed_file_types);
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="saml2_assert_attr_givennames" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for Given Names/ Preferred Names (in IDP Auth Response).', 'cftp_admin'); ?></label>
+								<label for="saml2_assert_attr_firstname" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for First name (in IDP Auth Response).', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
-									<input type="text" name="saml2_assert_attr_givennames" id="saml2_assert_attr_givennames" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_GIVENNAMES); ?>" />
+									<input type="text" name="saml2_assert_attr_firstname" id="saml2_assert_attr_firstname" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_FIRSTNAME); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="saml2_assert_attr_lastname" class="col-sm-4 control-label"><?php _e('Specify Attribute Name for Last name (in IDP Auth Response).', 'cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="text" name="saml2_assert_attr_lastname" id="saml2_assert_attr_lastname" class="form-control empty" value="<?php echo html_output(SAML2_ATTR_LASTNAME); ?>" />
 								</div>
 							</div>
 							

@@ -60,7 +60,8 @@ unset($_SESSION['AuthNRequestID']);
 //check for attributes
 $attributesNames = array(
     SAML2_ATTR_EMAIL,
-    SAML2_ATTR_GIVENNAMES
+    SAML2_ATTR_FIRSTNAME,
+    SAML2_ATTR_LASTNAME
 );
 $attributeEmail = false;
 $attributeRole = 0; //assume level 0 (client user)
@@ -68,6 +69,7 @@ $attributeGivenNames = false;
 foreach ($attributes as $attributeName => $attributeValue) {
     if ($attributeName == $attributesNames[0]) $attributeEmail = $attributeValue;
     if ($attributeName == $attributesNames[1]) $attributeGivenNames = $attributeValue;
+    if ($attributeName == $attributesNames[1] && !empty($attributeGivenNames)) $attributeGivenNames .= ' ' . $attributeValue;
 }
 
 if (empty($attributeEmail) || empty($attributeGivenNames)) {

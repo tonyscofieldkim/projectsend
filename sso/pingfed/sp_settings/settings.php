@@ -17,7 +17,7 @@ $advancedSettings = array (
     'baseurl' => BASE_URI. 'sso/pingfed/',
     'sp' => array (
         // Identifier of the SP entity  (must be a URI)
-        'entityId' => BASE_URI. 'sso/pingfed/sso_sp_metadata.php',
+        'entityId' => 'sso/pingfed/sso_sp_metadata.php',
         // Specifies info about where and how the <AuthnResponse> message MUST be
         // returned to the requester, in this case our SP.
         'assertionConsumerService' => array (

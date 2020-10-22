@@ -358,8 +358,8 @@ if (defined('TRY_INSTALL')) {
 								('system_password_expires_after', '2592000'),
 								('client_password_expires_after', '7776000'),
 								('saml2_sso_only', '0'),
-								('saml2_service_name', 'Files Server'),
-								('saml2_service_description', 'File Sharing, Client Oriented Service'),
+								('saml2_service_name', '3M POS Portal'),
+								('saml2_service_description', '3M POS Portal'),
 								('saml2_idp_entity_id', ''),
 								('saml2_sso_url', ''),
 								('saml2_slo_url', ''),
@@ -367,8 +367,8 @@ if (defined('TRY_INSTALL')) {
 								('saml2_sp_privkey', ''),
 								('saml2_idp_x509', ''),
 								('saml2_assert_attr_email', ''),
-								('saml2_assert_attr_givennames', ''),
-								('saml2_assert_attr_role', '')
+								('saml2_assert_attr_firstname', ''),
+								('saml2_assert_attr_lastname', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
