@@ -4,15 +4,16 @@
  * Sends a logout request to IDP
  */
 
+
+require_once('../../sys.includes.php');
+require_once('sp_settings/settings.php');
+require_once('./include.view.php');
+
 if(isset($_GET['finish'])){
     session_destroy();
     $location_ =  BASE_URI.'index.php';
     header("Location: $location");
 }
-
-require_once('../../sys.includes.php');
-require_once('sp_settings/settings.php');
-require_once('./include.view.php');
 
 if(!defined('SAML2_SSO_ENABLED') || SAML2_SSO_ENABLED != '1'){
     echo createView('SSO Not Enabled', 'SSO Login Method is disabled at the moment.');
