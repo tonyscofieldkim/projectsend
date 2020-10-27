@@ -45,5 +45,5 @@ try {
     header("Location: $url");
 } catch (Exception $e) {
 
-    echo createView('SSO Logout not finished', '<p>Error with request. Could not send Logout request to IDP</p> <b>'.$e.'</b>');
+    echo createView('SSO Logout not finished', '<p>Error with request. Could not send Logout request to IDP</p> <br/><b>'.$e->getMessage().'</b>');
 }
