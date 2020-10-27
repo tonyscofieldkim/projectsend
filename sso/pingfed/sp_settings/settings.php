@@ -156,7 +156,7 @@ $advancedSettings = array (
 
         // Indicates whether the <samlp:logoutRequest> messages sent by this SP
         // will be signed.
-        'logoutRequestSigned' => true,
+        'logoutRequestSigned' => false,
 
         // Indicates whether the <samlp:logoutResponse> messages sent by this SP
         // will be signed.
@@ -183,7 +183,7 @@ $advancedSettings = array (
 
         // Indicates a requirement for the <saml:Assertion> elements received by
         // this SP to be encrypted.
-        'wantAssertionsEncrypted' => true,
+        'wantAssertionsEncrypted' => false,
 
         // Indicates a requirement for the <saml:Assertion> elements received by
         // this SP to be signed.        [The Metadata of the SP will offer this info]
