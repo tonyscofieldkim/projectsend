@@ -25,20 +25,29 @@ try {
 }
 $allowed_levels = array(9, 8, 7, 0);
 $defaultPassword = 'P.a.ss*W.or.d01#';
+$auth = null;
+$requestID = null;
+try {
+    //code...
+    $auth = new OneLogin_Saml2_Auth($advancedSettings);
+    if (isset($_SESSION) && isset($_SESSION['AuthNRequestID'])) {
+        $requestID = $_SESSION['AuthNRequestID'];
+    } else {
+        $requestID = null;
+    }
 
-$auth = new OneLogin_Saml2_Auth($advancedSettings);
-if (isset($_SESSION) && isset($_SESSION['AuthNRequestID'])) {
-    $requestID = $_SESSION['AuthNRequestID'];
-} else {
-    $requestID = null;
+    $auth->processResponse($requestID);
+} catch (\Throwable $th) {
+    //throw $th;
+    echo createView('SSO Login not completed', 'Errors occurred within the request process. <hr/> <strong>'.$th->getMessage().'</strong>');
+    exit;
 }
-
-$auth->processResponse($requestID);
 
 $errors = $auth->getErrors();
 
 if (!empty($errors)) {
     echo createView('SSO Login not completed', 'Errors occurred within the request process.');
+    exit;
     //echo '<p>', implode(', ', $errors), '</p>'; //not good to print these errors to user
 }
 
@@ -74,7 +83,7 @@ foreach ($attributes as $attributeName => $attributeValue) {
 
 if (empty($attributeEmail) || empty($attributeGivenNames)) {
     //incorrect assertions.
-    echo createView("Authentication Assertion Error","<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>");
+    echo createView("Authentication Assertion Error", "<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>");
     exit;
 }
 
@@ -228,7 +237,6 @@ if ($count_user > 0) {
         $access_string    = html_output($userInfo['user']);
         $_SESSION['access']  = html_output($userInfo['user']);
     }
-
 }
 
 if (isset($_POST['RelayState']) && OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState']) {
