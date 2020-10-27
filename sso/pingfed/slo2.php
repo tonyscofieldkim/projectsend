@@ -5,6 +5,7 @@
  */
 
 if(isset($_GET['finish'])){
+    session_destroy();
     $location_ =  BASE_URI.'index.php';
     header("Location: $location");
 }
