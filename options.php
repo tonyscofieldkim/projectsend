@@ -132,8 +132,8 @@ if ($_POST) {
 	);
 	$allowed_empty_values[] = 'saml2_sp_x509';
 	$allowed_empty_values[] = 'saml2_sp_privkey';
-	$allowed_empty_values[] = 'saml2_idp_entity_id';
-	$allowed_empty_values[] = 'saml2_slo_url';
+	
+	//$allowed_empty_values[] = 'saml2_slo_url';
 
 	if (empty($_POST['google_signin_enabled'])) {
 		$allowed_empty_values[] = 'google_client_id';
@@ -1156,7 +1156,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 								<hr />
 							</div>
 							<div class="form-group">
-								<label for="saml2_idp_entity_id" class="col-sm-4 control-label"><?php _e('IDP EntityID (Not required)', 'cftp_admin'); ?></label>
+								<label for="saml2_idp_entity_id" class="col-sm-4 control-label"><?php _e('IDP EntityID *', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
 									<input type="text" name="saml2_idp_entity_id" id="saml2_idp_entity_id" class="form-control empty" value="<?php echo html_output(SAML2_IDP_ENTITY_ID); ?>" />
 								</div>
@@ -1176,7 +1176,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="saml2_slo_url" class="col-sm-4 control-label"><?php _e('SLO Request URL for SP initiated Logout', 'cftp_admin'); ?></label>
+								<label for="saml2_slo_url" class="col-sm-4 control-label"><?php _e('SLO Request URL (HTTP Redirect) *', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
 									<input type="text" name="saml2_slo_url" id="saml2_slo_url" class="form-control empty" value="<?php echo html_output(SAML2_IDP_SLO_URL); ?>" />
 								</div>

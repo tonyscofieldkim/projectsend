@@ -38,7 +38,7 @@ $auth->processResponse($requestID);
 $errors = $auth->getErrors();
 
 if (!empty($errors)) {
-    echo createView('SSO Login not completed', 'An error occurred in the request.');
+    echo createView('SSO Login not completed', 'Errors occurred within the request process.');
     //echo '<p>', implode(', ', $errors), '</p>'; //not good to print these errors to user
 }
 

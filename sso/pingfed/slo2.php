@@ -12,15 +12,17 @@ require_once('./include.view.php');
 if(isset($_GET['finish'])){
     session_destroy();
     $location_ =  BASE_URI.'index.php';
-    header("Location: $location");
+    header("Location: $location_");
+    exit;
 }
 
 if(!defined('SAML2_SSO_ENABLED') || SAML2_SSO_ENABLED != '1'){
     echo createView('SSO Not Enabled', 'SSO Login Method is disabled at the moment.');
     exit();
 }
-$samlSettings = new OneLogin_Saml2_Settings($advancedSettings);
+
 try {
+    $samlSettings = new OneLogin_Saml2_Settings($advancedSettings);
     $idpData = $samlSettings->getIdPData();
     if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
         $sloUrl = $idpData['singleLogoutService']['url'];
@@ -42,5 +44,6 @@ try {
 
     header("Location: $url");
 } catch (Exception $e) {
-    echo createView('SSO Logout not finished', '<p>Error with request. Could not send Logout request to IDP</p>');
+
+    echo createView('SSO Logout not finished', '<p>Error with request. Could not send Logout request to IDP</p> <b>'.$e.'</b>');
 }

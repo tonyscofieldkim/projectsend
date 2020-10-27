@@ -1,4 +1,54 @@
 <?php
+$default_sp_key = <<<EOD
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAxwwsXhnrakykAVVncWHWmv7Rep/f73F/DhbqP41GDFeXVX4U
+KaYlXVb1L5SaBdNkFqu4jI0vlUgf7OBt9h1OidieU+cYEg6C9UnbKkmheuZE21GC
+q05vMGJg84SaUSfXSw/aPn4Jq2T3djj41nV1Qh86od8mzNsHaQWfrfjRHBWp2ixd
+MMzTDhVwNvF/vZNQlu1fhxCzqV7rNFHIvFrGuu4HYJ5wRSM+jKd8qEk2+0LrDt9u
+j3YAJehkfaMRN8K0URvA9p/tXm08vOxedQnp57XkmreaC/O4cx/fDJSs7nnCGVVw
+VUqVFu8RmkF9H2nmuPEdLBPcIy6k7IQ5M9gXvwIDAQABAoIBAFzKuARGYRD1GZ/l
+iIu66KjpEg7waRze9DRFSn7GBVnLm6knVY70/YY9+59qz0LYAVjwROCBESWusfNj
+zN9nWi245laG7Rm92h8vhxR3ruf0YTU9EoV50yvjMP9VWftrb1p20W9AopFcSGC8
+voR7zWY92L+NoDDwCsxS6tXXoOROAi/Q7Vxmp08dbUnnVGvZU+Jk9wMP4xBkZKsv
+gVVzCu9Z3tE0GyFfNTodaDFkbJHX3zzs8usK20rEVZJGYmE6djs7gqIUUtZydJSg
+7Wa7lpl8ns9YS3MnhA0DBgohcEYLhprRxXeRSo2srD7b0qxVT9ZPOFS86Aez3N4q
+Qd9sawECgYEA8NRwfNUPzV9DqAYdWOf5HgrT2fZE7ZxRTNFQxJ3PY4PA+ek80j72
+imPnezm8O17uCWJvmuBXahcsePObUgUB0k+kKxhNjJuoJRgcBswWSjkb3J1AJptD
+znQ05TuzHRw2EUbSU7yj5zxvolkrHhNhZN55BvLw7pRoHP54GG/ymnECgYEA05X2
+nwX4HUwbWPz5KwflaTcYK1av+HUpD1dfS0RhsI1GARtAzTyWBlSzpvJu+BKKf8PL
+3WdpnD6ZU/0X3OWxEUiTJ2r3X2WdyRaoPVGZWjFscjRf1PHV3I0aaOn0tpImFw/Y
+LKxNX4ATj96ul0leaK+COGCCE0JCCPOvfNrWDS8CgYAh42LozfppRcx5alLa3dma
+Np/U/eh5HxP5oUKiSCqUsEeJYx6h3yZGFwTNvDQWjqckPuvBeWwTi6tAYdcrVXUK
+KRbK0aKn9IdWoOvgsPs5+otHIgGS7So/dO60ixALOpsJF1QlYFgYA9MZnz6H/uYn
+kX6qUalBiTSVT+GKXsZeoQKBgEBqN1rShmbk9K5y1ai0DrOpgkIvcgNCJ+3zu58+
+gj8tw1Iy6deRylrDDq6UwBPmESQ0h6wv/4cBx8w6ETm+89k/Lw2hEw6H8TF3JGEG
+ppk+0rUyHLrHpUQv8Qpfr5CljdMXj8iJ7ERWyZ3TPXPxcjyMsihXuUIDufbfuV1Z
+gjEhAoGBAOgZoW8Ei4qOKgn30Ewir04Qfg+GO3VsuANx0U1WNqgOXjPlj6Iia3ec
+jAAIP//e0lgvpc7LQ1lzckcmyCBIB+NS4X0xEC6Esib1iqGZ1BnHeyEMNVwRMt6Y
+je/TIYU1B9Vx4kbYULzkGqyB85HeQaYM4UyVyJoGsu+s9cuUMIff
+-----END RSA PRIVATE KEY-----
+EOD;
+
+$default_sp_cert = <<<EOD
+-----BEGIN CERTIFICATE-----
+MIIC4TCCAcmgAwIBAgIJAIVu9uQpI9mQMA0GCSqGSIb3DQEBBQUAMB4xHDAaBgNV
+BAMTE3Bvc3BvcnRhbC4zbS5jb20uYXUwHhcNMjAxMDI3MTEzMjAzWhcNMzAxMDI1
+MTEzMjAzWjAeMRwwGgYDVQQDExNwb3Nwb3J0YWwuM20uY29tLmF1MIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxwwsXhnrakykAVVncWHWmv7Rep/f73F/
+DhbqP41GDFeXVX4UKaYlXVb1L5SaBdNkFqu4jI0vlUgf7OBt9h1OidieU+cYEg6C
+9UnbKkmheuZE21GCq05vMGJg84SaUSfXSw/aPn4Jq2T3djj41nV1Qh86od8mzNsH
+aQWfrfjRHBWp2ixdMMzTDhVwNvF/vZNQlu1fhxCzqV7rNFHIvFrGuu4HYJ5wRSM+
+jKd8qEk2+0LrDt9uj3YAJehkfaMRN8K0URvA9p/tXm08vOxedQnp57XkmreaC/O4
+cx/fDJSs7nnCGVVwVUqVFu8RmkF9H2nmuPEdLBPcIy6k7IQ5M9gXvwIDAQABoyIw
+IDAeBgNVHREEFzAVghNwb3Nwb3J0YWwuM20uY29tLmF1MA0GCSqGSIb3DQEBBQUA
+A4IBAQAhT0gmjz9SDhHBIIT4iPbDm2/mAhIJ9MX2onFhL7jXwk6rcybT4ql9DZDI
+kE96M4ax2jOu+3N9OpiXVNtWFyAPcaF4I2ijptqLEq654bKRhr650/3wPIeuOHyQ
+TDGROWUwQ/si/QgVO3RGNhM/SDCmhG2WXI8zeCnMYNOGe8SBBULhpD8EhIxvLU4v
+/BKsxvtX/j/LoMTyRwGfYWPF3RREWK3polA4enGIJoKFZGosFe2OUQMzZsoYSum4
+bFAJl9TKQEOEPSADErEOpdOmQFcdrNSFgJ7StrV5uqGeXIvL5EI+QF7Phg1Ru2/q
+OGgCFvpySdy3MHa+b0OqIf2WJpQE
+-----END CERTIFICATE-----
+EOD;
 
 $advancedSettings = array (
     // If 'strict' is True, then the PHP Toolkit will reject unsigned
@@ -61,8 +111,8 @@ $advancedSettings = array (
 
         // Usually x509cert and privateKey of the SP are provided by files placed at
         // the certs folder. But we can also provide them with the following parameters
-        'x509cert' => SAML2_SP_X509,
-        'privateKey' => SAML2_SP_PRIVKEY,
+        'x509cert' => empty(SAML2_SP_X509) ? $default_sp_cert : SAML2_SP_X509,
+        'privateKey' => empty(SAML2_SP_PRIVKEY) ? $default_sp_key : SAML2_SP_PRIVKEY,
 
         /*
          * Key rollover
@@ -76,7 +126,7 @@ $advancedSettings = array (
     // Identity Provider Data that we want connect with our SP
     'idp' => array (
         // Identifier of the IdP entity  (must be a URI)
-        'entityId' => SAML2_IDP_ENTITY_ID,
+        'entityId' => empty(SAML2_IDP_ENTITY_ID) ? 'EntityId000001' : SAML2_IDP_ENTITY_ID,
         // SSO endpoint info of the IdP. (Authentication Request protocol)
         'singleSignOnService' => array (
             // URL Target of the IdP where the SP will send the Authentication Request Message
@@ -250,12 +300,12 @@ $advancedSettings = array (
     // Contact information template, it is recommended to suply a technical and support contacts
     'contactPerson' => array (
         'technical' => array (
-            'givenName' => '',
-            'emailAddress' => ''
+            'givenName' => '3M Support',
+            'emailAddress' => 'support@3m.com.au'
         ),
         'support' => array (
             'givenName' => 'Support',
-            'emailAddress' => 'https://www.3m.com/3M/en_US/company-us/help-center/'
+            'emailAddress' => 'support@3m.com.au'
         ),
     ),
 
