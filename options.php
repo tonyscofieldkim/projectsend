@@ -1086,7 +1086,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 									<?php _e('SP EntityId', 'cftp_admin'); ?>
 								</div>
 								<div class="col-sm-8">
-									<span class="format_url"><?php echo '4732fa0c04e7a240a7e69425da2e231c'; ?></span>
+									<span class="format_url"><?php echo 'sso/pingfed/sso_sp_metadata.php'; ?></span>
 								</div>
 							</div>
 							<div class="form-group">
