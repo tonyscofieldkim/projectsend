@@ -47,7 +47,7 @@ $errors = $auth->getErrors();
 
 if (!empty($errors)) {
     if($errors[0] == 'invalid_response'){
-        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid');
+        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid. Reason: '. $auth->getLastErrorReason());
         exit;
     }
     echo createView('SSO Login not completed', 'Errors occurred within the request process.');

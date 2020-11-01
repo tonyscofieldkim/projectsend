@@ -19,8 +19,13 @@ if (!is_projectsend_installed()) {
 if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
 	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
 		$logout_location = BASE_URI . 'process.php?do=logout&timeout=1';
-		header('Location: ' . $logout_location);
-		die();
+		if(strpos($_SERVER['REQUEST_URI'], 'process.php?do=logout&timeout') !== false){
+
+		}
+		else {
+			header('Location: ' . $logout_location);
+			die();
+		}
 	}
 }
 $_SESSION['last_call'] = time(); // update last activity time stamp
