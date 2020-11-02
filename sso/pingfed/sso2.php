@@ -179,7 +179,7 @@ if ($count_user > 0) {
             if ($userInfo['active'] != 0) {
                 $access_string = 'admin';
                 /** Set SESSION values */
-                $_SESSION['loggedin']  = html_output($userInfo['user']);
+                $_SESSION['loggedin']  = html_output($nameId);
                 $_SESSION['userlevel']  = $userInfo['level'];
                 $_SESSION['lang'] = SITE_LANG;
 
@@ -187,8 +187,8 @@ if ($count_user > 0) {
                     $access_string    = 'admin';
                     $_SESSION['access']  = $access_string;
                 } else {
-                    $access_string    = html_output($userInfo['user']);
-                    $_SESSION['access']  = html_output($userInfo['user']);
+                    $access_string    = html_output($nameId);
+                    $_SESSION['access']  = html_output($nameId);
                 }
 
                 /** Record the action log */
@@ -257,12 +257,12 @@ if ($count_user > 0) {
     $_SESSION['userlevel']  = $attributeRole;
     $_SESSION['lang'] = SITE_LANG;
 
-    if ($userInfo['level'] != 0) {
+    if ($attributeRole != 0) {
         $access_string    = 'admin';
         $_SESSION['access']  = $access_string;
     } else {
-        $access_string    = html_output($userInfo['user']);
-        $_SESSION['access']  = html_output($userInfo['user']);
+        $access_string    = html_output($nameId);
+        $_SESSION['access']  = html_output($nameId);
     }
 }
 

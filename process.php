@@ -59,6 +59,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 		setcookie("userlevel", "", time() - COOKIE_EXP_TIME);
 		
 		/** Record the action log */
+		if(defined('CURRENT_USER_ID')){
 		$new_log_action = new LogActions();
 		$log_action_args = array(
 			'action'	=> 31,
@@ -66,7 +67,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 			'affected_account_name' => $loggedin_
 		);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);
-		
+	}
 		/**redirect to SLO  Endpoint*/
 		$location_ = BASE_URI. 'sso/pingfed/slo2.php';
 		header("Location: $location_");
