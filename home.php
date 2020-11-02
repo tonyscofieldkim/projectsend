@@ -15,7 +15,7 @@ $load_scripts	= array(
 	'flot',
 );
 
-$allowed_levels = array(9, 8, 7);
+$allowed_levels = array(9, 8, 7, 0);
 require_once('sys.includes.php');
 $page_title = __('Dashboard', 'cftp_admin');
 

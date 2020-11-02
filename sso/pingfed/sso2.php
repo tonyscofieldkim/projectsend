@@ -39,15 +39,15 @@ try {
     $auth->processResponse($requestID);
 } catch (\Throwable $th) {
     //throw $th;
-    echo createView('SSO Login not completed', 'Errors occurred within the request process. <hr/> <strong>'.$th->getMessage().'</strong>', BASE_URI);
+    echo createView('SSO Login not completed', 'Errors occurred within the request process. <hr/> <strong>' . $th->getMessage() . '</strong>', BASE_URI);
     exit;
 }
 
 $errors = $auth->getErrors();
 
 if (!empty($errors)) {
-    if($errors[0] == 'invalid_response'){
-        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid. Reason: '. $auth->getLastErrorReason(), BASE_URI);
+    if ($errors[0] == 'invalid_response') {
+        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid. Reason: ' . $auth->getLastErrorReason(), BASE_URI);
         exit;
     }
     echo createView('SSO Login not completed', 'Errors occurred within the request process.', BASE_URI);
@@ -64,7 +64,7 @@ if (!$auth->isAuthenticated()) {
 $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
 $attributes = $auth->getAttributes();
 $nameId = $auth->getNameId();
-if(is_array($nameId)){
+if (is_array($nameId)) {
     $nameId = $nameId[0];
 }
 //make it lowercase
@@ -87,26 +87,24 @@ $attributeRole = 0; //assume level 0 (client user)
 $attributeGivenNames = false;
 foreach ($attributes as $attributeName => $attributeValue) {
     if ($attributeName == $attributesNames[0]) {
-        
+
         $attributeEmail = $attributeValue;
-        if(is_array($attributeEmail)){
+        if (is_array($attributeEmail)) {
             $attributeEmail = $attributeEmail[0];
         }
     }
     if ($attributeName == $attributesNames[1]) {
         $attributeGivenNames = $attributeValue;
-        if(is_array($attributeGivenNames)){
+        if (is_array($attributeGivenNames)) {
             $attributeGivenNames = $attributeGivenNames[0];
         }
     }
-    if ($attributeName == $attributesNames[1] && !empty($attributeGivenNames)) {
-        if(is_array($attributeValue)){
+    if ($attributeName == $attributesNames[2] && !empty($attributeGivenNames)) {
+        if (is_array($attributeValue)) {
             $attributeGivenNames .= ' ' . $attributeValue[0];
-        }
-        else{
+        } else {
             $attributeGivenNames .= ' ' . $attributeValue;
         }
-        
     }
 }
 
@@ -250,7 +248,7 @@ if ($count_user > 0) {
     if ($new_validate == 1) {
         $new_response = $new_user->create_user($new_arguments);
     } else {
-        echo createView("Account not created", "Could not create your account. One or more parameters are invalid: ". $valid_me->error_msg, BASE_URI);
+        echo createView("Account not created", "Could not create your account. One or more parameters are invalid: " . $valid_me->error_msg, BASE_URI);
         exit;
     }
     $access_string = 'admin';
