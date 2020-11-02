@@ -2,7 +2,7 @@
 /**
  * This is a response template for  messages sent to browswer. Errors or infos.
  */
-function createView($title = 'Error', $message = 'We experienced an error')
+function createView($title = 'Error', $message = 'We experienced an error', $login_url ='/index.php')
 {
     $view = <<<EOD
     <!DOCTYPE html>
@@ -39,6 +39,8 @@ function createView($title = 'Error', $message = 'We experienced an error')
     <hr/>
     <br/>
     $message
+    <br/>
+    <a href="$login_url"> Login Again</a>
     </div>
     </body>
     </html>

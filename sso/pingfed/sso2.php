@@ -39,7 +39,7 @@ try {
     $auth->processResponse($requestID);
 } catch (\Throwable $th) {
     //throw $th;
-    echo createView('SSO Login not completed', 'Errors occurred within the request process. <hr/> <strong>'.$th->getMessage().'</strong>');
+    echo createView('SSO Login not completed', 'Errors occurred within the request process. <hr/> <strong>'.$th->getMessage().'</strong>', BASE_URI);
     exit;
 }
 
@@ -47,16 +47,16 @@ $errors = $auth->getErrors();
 
 if (!empty($errors)) {
     if($errors[0] == 'invalid_response'){
-        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid. Reason: '. $auth->getLastErrorReason());
+        echo createView('SSO Login not completed', 'Errors occurred within request', 'Error: The response sent is invalid. Reason: '. $auth->getLastErrorReason(), BASE_URI);
         exit;
     }
-    echo createView('SSO Login not completed', 'Errors occurred within the request process.');
+    echo createView('SSO Login not completed', 'Errors occurred within the request process.', BASE_URI);
     exit;
     //echo '<p>', implode(', ', $errors), '</p>'; //not good to print these errors to user
 }
 
 if (!$auth->isAuthenticated()) {
-    echo createView('Not Authenticated', 'You are not authenticated.');
+    echo createView('Not Authenticated', 'You are not authenticated.', BASE_URI);
     exit();
 }
 
@@ -64,6 +64,12 @@ if (!$auth->isAuthenticated()) {
 $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
 $attributes = $auth->getAttributes();
 $nameId = $auth->getNameId();
+if(is_array($nameId)){
+    $nameId = $nameId[0];
+}
+//make it lowercase
+$nameId = strtolower($nameId);
+
 $nameIdFormat = $auth->getNameIdFormat();
 $nameIdQualifier = $auth->getNameIdNameQualifier();
 $nameIdServiceNameQualifier = $auth->getNameIdSPNameQualifier();
@@ -80,14 +86,33 @@ $attributeEmail = false;
 $attributeRole = 0; //assume level 0 (client user)
 $attributeGivenNames = false;
 foreach ($attributes as $attributeName => $attributeValue) {
-    if ($attributeName == $attributesNames[0]) $attributeEmail = $attributeValue;
-    if ($attributeName == $attributesNames[1]) $attributeGivenNames = $attributeValue;
-    if ($attributeName == $attributesNames[1] && !empty($attributeGivenNames)) $attributeGivenNames .= ' ' . $attributeValue;
+    if ($attributeName == $attributesNames[0]) {
+        
+        $attributeEmail = $attributeValue;
+        if(is_array($attributeEmail)){
+            $attributeEmail = $attributeEmail[0];
+        }
+    }
+    if ($attributeName == $attributesNames[1]) {
+        $attributeGivenNames = $attributeValue;
+        if(is_array($attributeGivenNames)){
+            $attributeGivenNames = $attributeGivenNames[0];
+        }
+    }
+    if ($attributeName == $attributesNames[1] && !empty($attributeGivenNames)) {
+        if(is_array($attributeValue)){
+            $attributeGivenNames .= ' ' . $attributeValue[0];
+        }
+        else{
+            $attributeGivenNames .= ' ' . $attributeValue;
+        }
+        
+    }
 }
 
 if (empty($attributeEmail) || empty($attributeGivenNames)) {
     //incorrect assertions.
-    echo createView("Authentication Assertion Error", "<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>");
+    echo createView("Authentication Assertion Error", "<p>You were not authenticated properly. Some Identity Assertion Attributes are missing.</p>", BASE_URI);
     exit;
 }
 
@@ -103,8 +128,7 @@ if (array_key_exists(intval($attributeRole), $allowed_levels)) {
 $statement->execute(
     array(
         ':username'    => $nameId,
-        ':email'    => $attributeEmail,
-        ':level' => $attributeRole
+        ':email'    => $attributeEmail
     )
 );
 $count_user = $statement->rowCount();
@@ -150,7 +174,7 @@ if ($count_user > 0) {
                 ':name' => $attributeGivenNames
             ));
             if ($statement->rowCount() < 1) {
-                echo createView("Account not connected", "<p>Your account could not be connected. Error code DBERR_QUERYFAIL</p>");
+                echo createView("Account not connected", "<p>Your account could not be connected. Error code DBERR_QUERYFAIL</p>", BASE_URI);
                 exit;
             }
 
@@ -179,7 +203,7 @@ if ($count_user > 0) {
                 );
                 $new_record_action = $new_log_action->log_action_save($log_action_args);
             } else {
-                echo createView('Your account is deactivated', 'Your account is not active. Contact system admin.');
+                echo createView('Your account is deactivated', 'Your account is not active. Contact system admin.', BASE_URI);
                 exit;
             }
         }
@@ -187,19 +211,20 @@ if ($count_user > 0) {
 } else {
     //this is a new user and is registered via vsmr. register them and log in
     //find if we have this email already
-    $statement = $dbh->prepare("SELECT COUNT * AS counted FROM " . TABLE_USERS . " WHERE email = :email");
+    $statement = $dbh->prepare("SELECT COUNT(*) AS counted FROM " . TABLE_USERS . " WHERE email = :email");
     $statement->execute(array(
         ':email' => $attributeEmail
     ));
     $count_user_x = $statement->rowCount();
-    if ($count_user > 0) {
-        if ($count_user_x['counted'] > 0) {
+    if ($count_user_x > 0) {
+        $count_user_xy = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($count_user_xy['counted'] > 0) {
             //user exists.
-            echo createView("Account setup error", "<p>Could create account. This email is already taken. ($attributeEmail)</p>");
+            echo createView("Account setup error", "<p>Could create account. This email is already taken. ($attributeEmail)</p>", BASE_URI);
             exit;
         }
     } else {
-        echo createView("SSO Login Error", "<p>Could not log in. Internal error code is: DBERR_QUERYFAIL</p>");
+        echo createView("SSO Login Error", "<p>Could not log in. Internal error code is: DBERR_QUERYFAIL</p>", BASE_URI);
         exit;
     }
     //proceed with registration
@@ -225,7 +250,7 @@ if ($count_user > 0) {
     if ($new_validate == 1) {
         $new_response = $new_user->create_user($new_arguments);
     } else {
-        echo createView("Account not created", "Could not create your account. One or more parameters are invalid");
+        echo createView("Account not created", "Could not create your account. One or more parameters are invalid: ". $valid_me->error_msg, BASE_URI);
         exit;
     }
     $access_string = 'admin';
