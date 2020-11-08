@@ -28,6 +28,7 @@ include('header-unlogged.php');
         }
         .white-box-interior h4{
             line-height: 4em;
+            text-align: center;
         }
         .white-box-interior a{
             text-decoration: underline;
@@ -50,7 +51,7 @@ include('header-unlogged.php');
                     </div>
                 </div>
                 <div style="text-align: center; color:grey;margin-top: 6em">
-                    &copy;<?php echo date('Y'); ?>&nbsp; 3M Company. All rights reserved.
+                    &copy;<?php echo date('Y'); ?>&nbsp;&nbsp; 3M Company. All rights reserved.
                 </div>
             </div>
         </div>

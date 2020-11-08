@@ -77,6 +77,7 @@ header("Content-Security-Policy: frame-ancestors none");
 </script>
 
 <?php
+$disable_pwd_edit = false;
 switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user', 'cftp_admin');
@@ -95,6 +96,9 @@ switch ($user_form_type) {
 	case 'edit_user_self':
 		$submit_value = __('Update account', 'cftp_admin');
 		$disable_user = true;
+		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+			$disable_pwd_edit = true;
+		}
 		$require_pass = false;
 		$form_action = 'users-edit.php?id=' . $user_id;
 		$extra_fields = false;
@@ -126,20 +130,20 @@ switch ($user_form_type) {
 			<div class="input-group">
 				<input name="add_user_form_pass" id="add_user_form_pass" class="form-control <?php if ($require_pass) {
 																									echo 'required';
-																								} ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+																								} ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
 				<div class="input-group-btn password_toggler">
-					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button <?php if($disable_pwd_edit) {echo "disabled";}; ?>>
 				</div>
 			</div>
 			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_user_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
-			<?php echo password_notes('system_user'); ?>
+			<?php echo $disable_pwd_edit === true ?  "" : password_notes('system_user'); ?>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label for="add_user_form_email" class="col-sm-4 control-label"><?php _e('E-mail', 'cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique", 'cftp_admin'); ?>" />
+			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique", 'cftp_admin'); ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
 		</div>
 	</div>
 
