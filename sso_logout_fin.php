@@ -7,7 +7,7 @@ require_once('sys.includes.php');
 
 $page_title = __('You Logged Out', 'cftp_admin');
 
-$is_logged_in_ = check_for_session();
+$is_logged_in_ = check_for_session(false);
 if ($is_logged_in_) {
     header('Location: home.php');
     exit;
@@ -21,13 +21,26 @@ include('header-unlogged.php');
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
     <?php echo generate_branding_layout(); ?>
+    <style>
+        .white-box-interior h1{
+            color:black;
+            text-align: center;
+        }
+        .white-box-interior h4{
+            line-height: 4em;
+        }
+        .white-box-interior a{
+            text-decoration: underline;
+            line-height: 3em;
+        }
 
+    </style>
     <div class="white-box">
         <div class="white-box-interior">
-            <h1>Thanks for using 3M Partner Portal. You are now logged off</h1>
+            <h1>Thank you for using 3M Partner Portal. You are now logged off</h1>
             <hr />
             <div class="jumbotron">
-                <h4>Here are some important links:</h4>
+                <h4>Here are some suggested next steps</h4>
                 <div class="row">
                     <div class="col-xs12 col-sm-12 col-lg-6">
                         <a href="http://3m.com.au">Visit 3M.COM.AU</a>
@@ -36,8 +49,8 @@ include('header-unlogged.php');
                         <a href="<?php echo SAML2_IDP_SSO_URL; ?>">Login to 3M Partner Portal Again</a>
                     </div>
                 </div>
-                <div style="text-align: center; color:grey">
-                &copy;<?php echo date('Y');?> 3M Company. All rights reserved.
+                <div style="text-align: center; color:grey;margin-top: 6em">
+                    &copy;<?php echo date('Y'); ?>&nbsp; 3M Company. All rights reserved.
                 </div>
             </div>
         </div>
