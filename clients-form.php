@@ -324,7 +324,7 @@ switch ($clients_form_type) {
 	?>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary" <?php if($disable_pwd_edit) {echo "disabled";}; ?>><?php echo html_output($submit_value); ?> </button>
 	</div>
 
 	<?php
