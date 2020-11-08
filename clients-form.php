@@ -60,7 +60,7 @@
 $current_level = get_current_user_level();
 
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
-
+$disable_pwd_edit = false;
 switch ($clients_form_type) {
 	/** User is creating a new client */
 	case 'new_client':
@@ -108,6 +108,9 @@ switch ($clients_form_type) {
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
+		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+			$disable_pwd_edit = true;
+		}
 		$extra_fields = false;
 		$group_field = false;
 		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
@@ -139,20 +142,20 @@ switch ($clients_form_type) {
 		<label for="add_client_form_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<div class="input-group">
-				<input name="add_client_form_pass" id="add_client_form_pass" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<input name="add_client_form_pass" id="add_client_form_pass" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
 				<div class="input-group-btn password_toggler">
-					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button >
 				</div>
 			</div>
-			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_client_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
-			<?php echo password_notes(); ?>
+			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_client_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?>><?php _e('Generate','cftp_admin'); ?></button>
+			<?php echo $disable_pwd_edit === true ?  "" : password_notes(); ?>
 		</div>		
 	</div>
 
 	<div class="form-group">
 		<label for="add_client_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+			<input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
 		</div>
 	</div>
 

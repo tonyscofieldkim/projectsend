@@ -132,10 +132,10 @@ switch ($user_form_type) {
 																									echo 'required';
 																								} ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
 				<div class="input-group-btn password_toggler">
-					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button <?php if($disable_pwd_edit) {echo "disabled";}; ?>>
+					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
-			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_user_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
+			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_user_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?>><?php _e('Generate', 'cftp_admin'); ?></button>
 			<?php echo $disable_pwd_edit === true ?  "" : password_notes('system_user'); ?>
 		</div>
 	</div>
