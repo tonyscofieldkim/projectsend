@@ -23,14 +23,13 @@ $header = 'header.php';
  * Check SAML SSO
  * If GET['do'] = saml2_sso_flow, send browser to the signon service
  */
-if(isset($_GET['do']) && $_GET['do'] == 'saml2_sso_flow'){
-	if(SAML2_SSO_ENABLED == 1){
-		if(isset($_SESSION['loggedin'])){
-			
+if (isset($_GET['do']) && $_GET['do'] == 'saml2_sso_flow') {
+	if (SAML2_SSO_ENABLED == 1) {
+		if (isset($_SESSION['loggedin'])) {
+
 			header('Location: home.php');
-		}
-		else{
-			header('Location: '. SAML2_IDP_SSO_URL);
+		} else {
+			header('Location: ' . SAML2_IDP_SSO_URL);
 			exit;
 		}
 	}
@@ -40,8 +39,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'saml2_sso_flow'){
  * Check SAML SLO
  * if logout and SSO enabled, redirect to SAML logout endpoint.
  */
-if(isset($_GET['do']) && $_GET['do'] == 'logout'){
-	if(SAML2_SSO_ENABLED == 1){
+if (isset($_GET['do']) && $_GET['do'] == 'logout') {
+	if (SAML2_SSO_ENABLED == 1) {
 		header("Cache-control: private");
 		$loggedin_ = $_SESSION['loggedin'];
 
@@ -50,34 +49,39 @@ if(isset($_GET['do']) && $_GET['do'] == 'logout'){
 		unset($_SESSION['userlevel']);
 		unset($_SESSION['lang']);
 		unset($_SESSION['last_call']);
-		session_destroy();
+		//session_destroy();
+		$saml_session_index = '138410309451';
+		if(isset($_SESSION['IdPSessionIndex'])){
+			$saml_session_index = $_SESSION['IdPSessionIndex'];
+		}
 
 		/** If there is a cookie, unset it */
 		setcookie("loggedin", "", time() - COOKIE_EXP_TIME);
 		setcookie("password", "", time() - COOKIE_EXP_TIME);
 		setcookie("access", "", time() - COOKIE_EXP_TIME);
 		setcookie("userlevel", "", time() - COOKIE_EXP_TIME);
-		
+		/**Set sso_session index for outgoing session */
+
 		/** Record the action log */
-		if(defined('CURRENT_USER_ID')){
-		$new_log_action = new LogActions();
-		$log_action_args = array(
-			'action'	=> 31,
-			'owner_id'	=> CURRENT_USER_ID,
-			'affected_account_name' => $loggedin_
-		);
-		$new_record_action = $new_log_action->log_action_save($log_action_args);
-	}
-		/**redirect to SLO  Endpoint*/
-		$location_ = BASE_URI. 'sso/pingfed/slo2.php';
-		header("Location: $location_");
+		if (defined('CURRENT_USER_ID') && !empty(CURRENT_USER_ID)) {
+			$new_log_action = new LogActions();
+			$log_action_args = array(
+				'action'	=> 31,
+				'owner_id'	=> CURRENT_USER_ID,
+				'affected_account_name' => $loggedin_
+			);
+			$new_record_action = $new_log_action->log_action_save($log_action_args);
+		}
+		/**redirect to Thank you page*/
 		
+		$location_ = BASE_URI . 'sso_logout_fin.php?x_sso_session=' . $saml_session_index;
+		header("Location: $location_");
 		exit;
 	}
 }
 
 if (!empty($_GET['do']) && $_GET['do'] == 'login') {
-	if(SAML2_SSO_ENABLED == 1){
+	if (SAML2_SSO_ENABLED == 1) {
 		header('Location: process.php?do=saml2_sso_flow');
 		exit;
 	}
@@ -234,32 +238,31 @@ class process
 
 								//check if password is expired
 								$expires_after = CLIENT_PASSWORD_EXPIRE_AFTER;
-								if($this->user_level != '0'){
+								if ($this->user_level != '0') {
 									$expires_after = SYS_PASSWORD_EXPIRE_AFTER;
 								}
 								$rowCount = 20;
 								$this->passwordExpired = false;
 
 								$no_expire_check = intval($expires_after) < 1;
-								if(!$no_expire_check){
-								$this->statement = $this->dbh->prepare('SELECT creation_time FROM '.TABLE_PASSWORD_HISTORY. ' WHERE uid = :uid ORDER BY creation_time DESC LIMIT 2');
+								if (!$no_expire_check) {
+									$this->statement = $this->dbh->prepare('SELECT creation_time FROM ' . TABLE_PASSWORD_HISTORY . ' WHERE uid = :uid ORDER BY creation_time DESC LIMIT 2');
 
-								$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT );
-								$this->statement->execute();
-								$rowCount = $this->statement->rowCount();
-								
-								if($rowCount > 0){
-									$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-									$row = $this->statement->fetch();
-									$creation_time = $row['creation_time'];
-									$time_ = time();
-									$expires_after = intval($expires_after);
-									if(($expires_after + $creation_time) < $time_){
-										$this->passwordExpired = true;
+									$this->statement->bindParam(':uid', $this->logged_id, PDO::PARAM_INT);
+									$this->statement->execute();
+									$rowCount = $this->statement->rowCount();
+
+									if ($rowCount > 0) {
+										$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+										$row = $this->statement->fetch();
+										$creation_time = $row['creation_time'];
+										$time_ = time();
+										$expires_after = intval($expires_after);
+										if (($expires_after + $creation_time) < $time_) {
+											$this->passwordExpired = true;
+										}
 									}
 								}
-								
-							}
 
 								if (($this->passwordExpired || $rowCount < 1) && !$no_expire_check) {
 									//do stuff
@@ -267,7 +270,7 @@ class process
 								} else {
 									//if ($db_pass == $sysuser_password) {
 
-									
+
 
 
 
@@ -357,7 +360,7 @@ class process
 
 				} catch (PDOException $th) {
 					//throw $th;
-					
+
 					exit('db_error');
 				}
 			} else {
@@ -409,8 +412,8 @@ class process
 					$this->login_err_message = __('You have tried to login more times than allowed within ' . round($this->attempts_interval / 60) . ' minutes. Please try again after ' . $after_ . ' ' . $unit_, 'cftp_admin');
 					break;
 				case 'password_expired':
-					$this->login_err_message = __('This password has exceeded the maximum lifetime allowed for your account type and must therefore be changed before you can login <br/><hr/> <a style="text-align:center;display:block" href="./reset-password.php?must_change_0=1&mail='.$this->logged_mail.'">Change password now</a>');
-				break;
+					$this->login_err_message = __('This password has exceeded the maximum lifetime allowed for your account type and must therefore be changed before you can login <br/><hr/> <a style="text-align:center;display:block" href="./reset-password.php?must_change_0=1&mail=' . $this->logged_mail . '">Change password now</a>');
+					break;
 			}
 		}
 

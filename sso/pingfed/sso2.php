@@ -3,6 +3,7 @@
 /**
  * Asertion consumption Endponit for SSO
  */
+define('NO_AUTO_REGISTER', 1);
 
 require_once('../../sys.includes.php');
 require_once('sp_settings/settings.php');
@@ -20,6 +21,7 @@ try {
     $_SESSION['REGEN_XID'] = 0;
     session_regenerate_id(false);
     unset($_SESSION['REGEN_XID']);
+    unset($_SESSION['IdPSessionIndex']);
 } catch (\Throwable $th) {
     //throw $th;
 }
@@ -169,7 +171,8 @@ if ($count_user > 0) {
             $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET user = :user, name = :name WHERE email = :email");
             $statement->execute(array(
                 ':user' => $nameId,
-                ':name' => $attributeGivenNames
+                ':name' => $attributeGivenNames,
+                ':email' => $attributeEmail
             ));
             if ($statement->rowCount() < 1) {
                 echo createView("Account not connected", "<p>Your account could not be connected. Error code DBERR_QUERYFAIL</p>", BASE_URI);
@@ -201,12 +204,17 @@ if ($count_user > 0) {
                 );
                 $new_record_action = $new_log_action->log_action_save($log_action_args);
             } else {
-                echo createView('Your account is deactivated', 'Your account is not active. Contact system admin.', BASE_URI);
+                echo createView('Your account is deactivated', 'Your account is not active. Please contact system admin.', BASE_URI);
                 exit;
             }
         }
     }
 } else {
+    if(defined('NO_AUTO_REGISTER') && NO_AUTO_REGISTER == 1){
+        //auto registration via IDP Response not allowed. exit here
+        echo createView("Account not found.", "<p>Account not found. <br/><b>The email: $attributeEmail</b> did not match any account at this server. Please contact your administrator for details.</p>", BASE_URI);
+        exit;
+    }
     //this is a new user and is registered via vsmr. register them and log in
     //find if we have this email already
     $statement = $dbh->prepare("SELECT COUNT(*) AS counted FROM " . TABLE_USERS . " WHERE email = :email");
