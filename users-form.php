@@ -78,6 +78,7 @@ header("Content-Security-Policy: frame-ancestors none");
 
 <?php
 $disable_pwd_edit = false;
+$isNewUser = false;
 switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user', 'cftp_admin');
@@ -85,6 +86,7 @@ switch ($user_form_type) {
 		$require_pass = true;
 		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
 			$disable_pwd_edit = true;
+			$isNewUser = true;
 		}
 		$form_action = 'users-add.php';
 		$extra_fields = true;
@@ -146,7 +148,7 @@ switch ($user_form_type) {
 	<div class="form-group">
 		<label for="add_user_form_email" class="col-sm-4 control-label"><?php _e('E-mail', 'cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique", 'cftp_admin'); ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
+			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique", 'cftp_admin'); ?>" <?php if($disable_pwd_edit && !$isNewUser) {echo "disabled";}; ?> />
 		</div>
 	</div>
 
@@ -206,7 +208,7 @@ switch ($user_form_type) {
 	?>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary" <?php if($disable_pwd_edit) {echo "disabled";}; ?>><?php echo $submit_value; ?></button>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary" <?php if($disable_pwd_edit && !$isNewUser) {echo "disabled";}; ?>><?php echo $submit_value; ?></button>
 	</div>
 
 	<?php

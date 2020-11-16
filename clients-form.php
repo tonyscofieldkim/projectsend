@@ -61,6 +61,7 @@ $current_level = get_current_user_level();
 
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 $disable_pwd_edit = false;
+$isNewClient = false;
 switch ($clients_form_type) {
 	/** User is creating a new client */
 	case 'new_client':
@@ -69,6 +70,7 @@ switch ($clients_form_type) {
 		$require_pass = true;
 		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
 			$disable_pwd_edit = true;
+			$isNewClient = true;
 
 		}
 		$form_action = 'clients-add.php';
@@ -160,7 +162,7 @@ switch ($clients_form_type) {
 	<div class="form-group">
 		<label for="add_client_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" <?php if($disable_pwd_edit) {echo "disabled";}; ?> />
+			<input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" <?php if($disable_pwd_edit && !$isNewClient) {echo "disabled";}; ?> />
 		</div>
 	</div>
 
@@ -332,7 +334,7 @@ switch ($clients_form_type) {
 	?>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary" <?php if($disable_pwd_edit) {echo "disabled";}; ?>><?php echo html_output($submit_value); ?> </button>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary" <?php if($disable_pwd_edit && !$isNewClient) {echo "disabled";}; ?>><?php echo html_output($submit_value); ?> </button>
 	</div>
 
 	<?php
