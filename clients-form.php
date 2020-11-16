@@ -67,6 +67,10 @@ switch ($clients_form_type) {
 		$submit_value = __('Add client','cftp_admin');
 		$disable_user = false;
 		$require_pass = true;
+		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+			$disable_pwd_edit = true;
+
+		}
 		$form_action = 'clients-add.php';
 		$info_box = true;
 		$extra_fields = true;
@@ -110,6 +114,7 @@ switch ($clients_form_type) {
 		$info_box = false;
 		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
 			$disable_pwd_edit = true;
+
 		}
 		$extra_fields = false;
 		$group_field = false;
@@ -295,11 +300,14 @@ switch ($clients_form_type) {
 
 	<?php
 		if ( $clients_form_type == 'new_client' ) {
+			if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+				$add_client_data_notify_account = 'x';
+			}
 	?>
 			<div class="form-group">
 				<div class="col-sm-8 col-sm-offset-4">
 					<label for="add_client_form_notify_account">
-						<input type="checkbox" name="add_client_form_notify_account" id="add_client_form_notify_account" <?php echo (isset($add_client_data_notify_account) && $add_client_data_notify_account == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Send welcome email','cftp_admin'); ?>
+						<input type="checkbox" name="add_client_form_notify_account" id="add_client_form_notify_account" <?php echo (isset($add_client_data_notify_account) && $add_client_data_notify_account == 1) ? 'checked="checked"' : ''; echo isset($add_client_data_notify_account) && $add_client_data_notify_account == 'x' ? 'disabled' : ''; ?>> <?php _e('Send welcome email','cftp_admin'); ?>
 					</label>
 				</div>
 			</div>

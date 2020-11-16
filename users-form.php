@@ -83,6 +83,9 @@ switch ($user_form_type) {
 		$submit_value = __('Add user', 'cftp_admin');
 		$disable_user = false;
 		$require_pass = true;
+		if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+			$disable_pwd_edit = true;
+		}
 		$form_action = 'users-add.php';
 		$extra_fields = true;
 		break;
@@ -182,12 +185,15 @@ switch ($user_form_type) {
 
 		<?php
 		if ($user_form_type == 'new_user') {
+			if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+				$add_user_data_notify_account = 'x';
+			}
 		?>
 
 			<div class="form-group">
 				<div class="col-sm-8 col-sm-offset-4">
 					<label for="add_user_form_notify_account">
-						<input type="checkbox" name="add_user_form_notify_account" id="add_user_form_notify_account" <?php echo (isset($add_user_data_notify_account) && $add_user_data_notify_account == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send welcome email', 'cftp_admin'); ?>
+						<input type="checkbox" name="add_user_form_notify_account" id="add_user_form_notify_account" <?php echo (isset($add_user_data_notify_account) && $add_user_data_notify_account == 1) ? 'checked="checked"' : ''; echo isset($add_user_data_notify_account) && $add_user_data_notify_account == 'x' ? 'disabled' : ''; ?> /> <?php _e('Send welcome email', 'cftp_admin'); ?>
 					</label>
 				</div>
 			</div>

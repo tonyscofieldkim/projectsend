@@ -22,31 +22,37 @@ include('header-unlogged.php');
 
     <?php echo generate_branding_layout(); ?>
     <style>
-        .white-box-interior h1{
-            color:black;
+        .white-box-interior h1 {
+            color: black;
             text-align: center;
+            font-size: 26px;
+            line-height: 26px;
         }
-        .white-box-interior h4{
+
+        .white-box-interior h4 {
             line-height: 4em;
             text-align: center;
         }
-        .white-box-interior a{
+
+        .white-box-interior a {
             text-decoration: underline;
             line-height: 3em;
+            display: block;
+            text-align: center;
+            width: 100%;
         }
-
     </style>
     <div class="white-box">
         <div class="white-box-interior">
-            <h1>Thank you for using 3M Partner Portal. You are now logged off</h1>
+            <h1>Thank you for using the 3M Partner Portal. You are now logged off</h1>
             <hr />
             <div class="jumbotron">
                 <h4>Here are some suggested next steps</h4>
                 <div class="row">
-                    <div class="col-xs12 col-sm-12 col-lg-6">
+                    <div class="col-xs12 col-sm-12 col-lg-12">
                         <a href="http://3m.com.au">Visit 3M.COM.AU</a>
                     </div>
-                    <div class="col-xs12 col-sm-12 col-lg-6">
+                    <div class="col-xs12 col-sm-12 col-lg-12">
                         <a href="<?php echo SAML2_IDP_SSO_URL; ?>">Login to 3M Partner Portal Again</a>
                     </div>
                 </div>

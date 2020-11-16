@@ -70,7 +70,9 @@ if ($_POST) {
 		'max_file_size'	=> $add_client_data_maxfilesize,
 		'type'			=> 'new_client',
 	);
-
+	if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+		$new_arguments['password'] = 'v40%B3-0&Hd4x';
+	}
 	/** Validate the information from the posted form. */
 	$new_validate = $new_client->validate_client($new_arguments);
 

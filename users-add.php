@@ -59,7 +59,9 @@ if ($_POST) {
 		'notify_account' => $add_user_data_notify_account,
 		'type' => 'new_user'
 	);
-
+	if(defined('SAML2_SSO_ENABLED') && SAML2_SSO_ENABLED == 1){
+		$new_arguments['password'] = 'v40%B3-0&Hd4x';
+	}
 	/** Validate the information from the posted form. */
 	$new_validate = $new_user->validate_user($new_arguments);
 
