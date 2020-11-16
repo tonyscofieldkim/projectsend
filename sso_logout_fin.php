@@ -20,13 +20,13 @@ include('header-unlogged.php');
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
-    <?php echo generate_branding_layout(); ?>
+    
     <style>
         .white-box-interior h1 {
             color: black;
             text-align: center;
-            font-size: 26px;
-            line-height: 26px;
+            font-size: 18px;
+            line-height: 18px;
         }
 
         .white-box-interior h4 {
@@ -41,7 +41,13 @@ include('header-unlogged.php');
             text-align: center;
             width: 100%;
         }
+        .backend .branding_unlogged img{
+            max-height: 100% !important;
+            max-width: 100% !important;
+            user-select: none;
+        }
     </style>
+    <?php echo generate_branding_layout(); ?>
     <div class="white-box">
         <div class="white-box-interior">
             <h1>Thank you for using the 3M Partner Portal. You are now logged off</h1>
