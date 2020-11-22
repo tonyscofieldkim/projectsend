@@ -161,6 +161,7 @@ if (
 ) {
 	$action				= 'edit';
 	$editing			= !empty($_POST['editing_id']) ? $_POST['editing_id'] : $_GET['id'];
+	$editing = html_output($editing);
 	$form_information	= array(
 		'type'	=> 'edit_category',
 		'title'	=> __('Edit category', 'cftp_admin'),

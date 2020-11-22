@@ -39,6 +39,8 @@ $results_type = 'global';
  */
 if (isset($_GET['client_id'])) {
 	$this_id = $_GET['client_id'];
+	$this_id = html_output($this_id);
+
 	$this_client = get_client_by_id($this_id);
 	/** Add the name of the client to the page's title. */
 	if (!empty($this_client)) {
@@ -55,6 +57,7 @@ if (isset($_GET['client_id'])) {
 if (isset($_GET['group_id'])) {
 	$this_id = $_GET['group_id'];
 
+	$this_id = html_output($this_id);
 
 	$sql_name = $dbh->prepare("SELECT name from " . TABLE_GROUPS . " WHERE id=:id");
 	$sql_name->bindParam(':id', $this_id, PDO::PARAM_INT);
@@ -80,6 +83,7 @@ if (isset($_GET['group_id'])) {
  */
 if (isset($_GET['category'])) {
 	$this_id = $_GET['category'];
+	$this_id = html_output($this_id);
 	$this_category = get_category($this_id);
 	/** Add the name of the client to the page's title. */
 	if (!empty($this_category)) {
