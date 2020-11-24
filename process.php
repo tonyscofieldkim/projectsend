@@ -72,7 +72,12 @@ if (isset($_GET['do']) && $_GET['do'] == 'logout') {
 			);
 			$new_record_action = $new_log_action->log_action_save($log_action_args);
 		}
-		/**redirect to Thank you page*/
+		/**redirect to Thank you page after logout url*/
+		if(!empty(SAML2_IDP_SLO_URL)){
+			$location_ = SAML2_IDP_SLO_URL. '?TARGET='. BASE_URI . 'sso_logout_fin.php?x_sso_session=' . $saml_session_index;
+			header("Location: $location_");
+			exit;
+		}
 		
 		$location_ = BASE_URI . 'sso_logout_fin.php?x_sso_session=' . $saml_session_index;
 		header("Location: $location_");

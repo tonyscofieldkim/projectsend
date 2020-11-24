@@ -23,12 +23,17 @@ if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
 
 		}
 		else {
+			$_SESSION['session_timeout'] = 1;
 			header('Location: ' . $logout_location);
 			die();
 		}
 	}
 }
 $_SESSION['last_call'] = time(); // update last activity time stamp
+if(isset($_SESSION['session_timeout'])){
+	unset($_SESSION['session_timeout']);
+}
+
 
 
 /**

@@ -1176,7 +1176,7 @@ $allowed_file_types = implode(',', $allowed_file_types);
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="saml2_slo_url" class="col-sm-4 control-label"><?php _e('SLO Request URL (HTTP Redirect) *', 'cftp_admin'); ?></label>
+								<label for="saml2_slo_url" class="col-sm-4 control-label"><?php _e('SLO Request URL (Do not include ?TARGET=url) parts*', 'cftp_admin'); ?></label>
 								<div class="col-sm-8">
 									<input type="text" name="saml2_slo_url" id="saml2_slo_url" class="form-control empty" value="<?php echo html_output(SAML2_IDP_SLO_URL); ?>" />
 								</div>

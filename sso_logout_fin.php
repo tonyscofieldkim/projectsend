@@ -5,7 +5,6 @@ header("Content-Security-Policy: frame-ancestors none");
 $allowed_levels = array(9, 8, 7, 0);
 require_once('sys.includes.php');
 
-$page_title = __('You Logged Out', 'cftp_admin');
 
 $is_logged_in_ = check_for_session(false);
 if ($is_logged_in_) {
@@ -16,6 +15,13 @@ if (!isset($_GET['x_sso_session']) || !isset($_SESSION['IdPSessionIndex']) || $_
     //cannot show logout page if you did not just log out.
     exit;
 }
+$session_had_timed_out = false;
+if(isset($_SESSION['session_timeout'])){
+    $session_had_timed_out = true;
+}
+
+$page_title = $session_had_timed_out ? __('Session Expired', 'cftp_admin') :  __('You Logged Out', 'cftp_admin');
+
 include('header-unlogged.php');
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
@@ -50,9 +56,11 @@ include('header-unlogged.php');
     <?php echo generate_branding_layout(); ?>
     <div class="white-box">
         <div class="white-box-interior">
-            <h1>Thank you for using the 3M Partner Portal. You are now logged off</h1>
+            <h1><?php echo $session_had_timed_out ? "Your session has expired. Please login again" : "Thank you for using the 3M Partner Portal. You are now logged off"; ?></h1>
             <hr />
+            <?php if(!$session_had_timed_out) { ?>
             <div class="jumbotron">
+                
                 <h4>Here are some suggested next steps</h4>
                 <div class="row">
                     <div class="col-xs12 col-sm-12 col-lg-12">
@@ -66,6 +74,21 @@ include('header-unlogged.php');
                     &copy;<?php echo date('Y'); ?>&nbsp;&nbsp; 3M Company. All rights reserved.
                 </div>
             </div>
+            <?php }
+             else{ ?>
+             <div class="jumbotron">
+                
+                <h4>Login Required</h4>
+                <div class="row">
+                    <div class="col-xs12 col-sm-12 col-lg-12">
+                        <a href="<?php echo SAML2_IDP_SSO_URL; ?>">Login to 3M Partner Portal Again</a>
+                    </div>
+                </div>
+                <div style="text-align: center; color:grey;margin-top: 6em">
+                    &copy;<?php echo date('Y'); ?>&nbsp;&nbsp; 3M Company. All rights reserved.
+                </div>
+            </div>
+             <?php } ?>
         </div>
     </div>
     <?php
