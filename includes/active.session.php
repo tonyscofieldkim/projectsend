@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Define the information about the current logged in user or client
  * used on the different validations across the system.
@@ -16,23 +17,22 @@ if (!is_projectsend_installed()) {
 	exit;
 }
 
-if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
+if (defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true) {
 	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
+		$_SESSION['session_timeout'] = 1;
 		$logout_location = BASE_URI . 'process.php?do=logout&timeout=1';
-		if(strpos($_SERVER['REQUEST_URI'], 'process.php?do=logout&timeout') !== false){
-
-		}
-		else {
-			$_SESSION['session_timeout'] = 1;
+		if (strpos($_SERVER['REQUEST_URI'], 'process.php?do=logout&timeout') !== false) {
+			if (!isset($_SESSION['session_timeout'])) {
+				header('Location: ' . $logout_location . '&show_message=yes');
+				die();
+			}
+		} else {
 			header('Location: ' . $logout_location);
 			die();
 		}
 	}
 }
 $_SESSION['last_call'] = time(); // update last activity time stamp
-if(isset($_SESSION['session_timeout'])){
-	unset($_SESSION['session_timeout']);
-}
 
 
 
@@ -47,8 +47,7 @@ $global_level = get_current_user_level();
  */
 if ($global_level != 0) {
 	$global_account = get_user_by_username($global_user);
-}
-else {
+} else {
 	$global_account = get_client_by_username($global_user);
 }
 
@@ -59,10 +58,9 @@ if ($global_account['active'] == '0') {
 	/** Prevent an infinite loop */
 	if (!isset($_SESSION['logout'])) {
 		$_SESSION['logout'] = '1';
-	}
-	else {
+	} else {
 		unset($_SESSION['logout']);
-		header("location:".BASE_URI.'process.php?do=logout');
+		header("location:" . BASE_URI . 'process.php?do=logout');
 		exit;
 	}
 }
@@ -70,11 +68,11 @@ if ($global_account['active'] == '0') {
 /**
  * Save all the data on different constants
  */
-define('CURRENT_USER_ID',$global_account['id']);
-define('CURRENT_USER_USERNAME',$global_account['username']);
-define('CURRENT_USER_NAME',$global_account['name']);
-define('CURRENT_USER_EMAIL',$global_account['email']);
-define('CURRENT_USER_LEVEL',$global_account['level']);
+define('CURRENT_USER_ID', $global_account['id']);
+define('CURRENT_USER_USERNAME', $global_account['username']);
+define('CURRENT_USER_NAME', $global_account['name']);
+define('CURRENT_USER_EMAIL', $global_account['email']);
+define('CURRENT_USER_LEVEL', $global_account['level']);
 
 $global_id = $global_account['id'];
 $global_name = $global_account['name'];
@@ -82,10 +80,9 @@ $global_name = $global_account['name'];
 /**
  * Check if account has a custom value for upload max file size
  */
-if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
+if ($global_account['max_file_size'] == 0 || empty($global_account['max_file_size'])) {
 	define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
-}
-else {
+} else {
 	define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
 }
 
@@ -93,23 +90,22 @@ else {
  * Files types limitation
  */
 $limit_files = true;
-if ( defined( 'FILE_TYPES_LIMIT_TO' ) ) {
-	switch ( FILE_TYPES_LIMIT_TO ) {
+if (defined('FILE_TYPES_LIMIT_TO')) {
+	switch (FILE_TYPES_LIMIT_TO) {
 		case 'noone':
 			$limit_files = false;
 			break;
 		case 'all':
 			break;
 		case 'clients':
-			if ( CURRENT_USER_LEVEL != 0 ) {
+			if (CURRENT_USER_LEVEL != 0) {
 				$limit_files = false;
 			}
 			break;
 	}
 }
-if ( $limit_files === true ) {
+if ($limit_files === true) {
 	define('CAN_UPLOAD_ANY_FILE_TYPE', false);
-}
-else {
+} else {
 	define('CAN_UPLOAD_ANY_FILE_TYPE', true);
 }

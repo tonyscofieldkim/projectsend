@@ -48,8 +48,10 @@ include('header-unlogged.php');
             width: 100%;
         }
         .backend .branding_unlogged img{
-            max-height: 100% !important;
-            max-width: 100% !important;
+            width: 100px !important;
+            height: 100px !important;
+            max-height: 150px !important;
+            max-width: 150px !important;
             user-select: none;
         }
     </style>

@@ -273,7 +273,9 @@ if ($count_user > 0) {
         $_SESSION['access']  = html_output($nameId);
     }
 }
-
+if(isset($_SESSION['session_timeout'])){
+    unset($_SESSION['session_timeout']);
+}
 if (isset($_POST['RelayState']) && OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState']) {
     $auth->redirectTo($_POST['RelayState']);
 } else {
